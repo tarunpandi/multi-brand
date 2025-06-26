@@ -1,10 +1,8 @@
 .tabs {
   --tabs-color-bg: #fff;
-  --tabs-color-header: #ff0000;
+  --tabs-color-header: #f00;
   --tabs-color-description: #222;
-}
-
-.tabs {
+  
   background-color: var(--tabs-color-bg);
 }
 
@@ -35,7 +33,6 @@
   border-radius: 0;
   padding: 0.5em;
   background-color: var(--light-color);
-  color: initial;
   font-weight: bold;
   line-height: unset;
   text-align: initial;
@@ -67,11 +64,6 @@
 
 .tabs .tabs-panel[aria-hidden='true'] {
   display: none;
-}
-
-.tabs.reverse .tabs-list {
-  flex-direction: row-reverse;
-  color: red;
 }
 
 .tabs.reverse .tabs-list button {
