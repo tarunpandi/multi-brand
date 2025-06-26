@@ -8,10 +8,9 @@ import {
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
-  loadSection,
-  loadSections,
   loadCSS,
 } from './aem.js';
+import { loadSection, loadSections } from './multi-theme.js';
 
 /**
  * Builds hero block and prepends to main in a new section.

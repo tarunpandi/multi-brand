@@ -1,4 +1,6 @@
-export default function decorate(block) {
+import { renderBlock } from '../../scripts/multi-theme.js';
+
+export async function decorateBlock(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
 
@@ -15,4 +17,8 @@ export default function decorate(block) {
       }
     });
   });
+}
+
+export default async function decorate(block) {
+  renderBlock(block);
 }

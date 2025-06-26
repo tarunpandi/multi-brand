@@ -1,0 +1,15 @@
+@import '../tabs.css';
+
+/* dark specific code goes here */
+
+/* Always keep .dark scope for brand specific override 
+Example:
+.dark h2 {
+  color: var(--color-token);
+}
+*/
+
+.tabs {
+  background-color: #000;
+  color: #fff;
+}

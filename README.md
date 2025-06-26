@@ -19,6 +19,48 @@ Before using the aem-boilerplate, we recommand you to go through the documentati
 npm i
 ```
 
+## Theme Management
+
+### Initiate new Brand Theme
+Setup dev environment for a new brand theme
+```
+npm run theme:init
+```
+
+### Remove Brand Theme
+Remove unwanted brand theme
+```
+npm run theme:remove
+```
+
+### Start Theme
+
+Starts Gulp server to generate and serve merged CSS
+
+```
+npm run theme:start
+```
+
+### Build Theme
+
+Generate and serve merged CSS
+
+Configure BRANDS .env 
+ BRANDS=brand1,brand2,brand3
+
+```
+npm run theme:build
+```
+
+## Environment Proxy
+setup .env file to point to specific pages url
+
+```
+AEM_OPEN=/en/
+AEM_PORT=3000
+AEM_PAGES_URL=https://main--eds-multi-brand--acs-ui.aem.page/
+```
+
 ## Linting
 
 ```sh
@@ -28,7 +70,7 @@ npm run lint
 ## Local development
 
 1. Create a new repository based on the `aem-boilerplate` template and add a mountpoint in the `fstab.yaml`
-1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
-1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
-1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
-1. Open the `{repo}` directory in your favorite IDE and start coding :)
+2. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
+3. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
+4. Start theme server and AEM Proxy: `npm start` (opens your browser at `http://localhost:3000`)
+5. Open the `{repo}` directory in your favorite IDE and start coding :)

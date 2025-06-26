@@ -1,0 +1,6 @@
+# Ignore the merged CSS files. They are not linted. - Start.
+blocks/*/*/*.css
+!blocks/*/*/_*.css
+styles/*/*.css
+!styles/*/_*.css
+# Ignore the merged CSS files. They are not linted. - End.
