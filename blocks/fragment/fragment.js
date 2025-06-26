@@ -10,7 +10,8 @@ import {
 
 import {
   loadSections,
-} from '../../scripts/aem.js';
+  renderBlock,
+} from '../../scripts/multi-theme.js';
 
 /**
  * Loads a fragment.
@@ -41,7 +42,7 @@ export async function loadFragment(path) {
   return null;
 }
 
-export default async function decorate(block) {
+export async function decorateBlock(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);
@@ -52,4 +53,8 @@ export default async function decorate(block) {
       block.closest('.fragment').replaceWith(...fragment.childNodes);
     }
   }
+}
+
+export default async function decorate(block) {
+  renderBlock(block);
 }

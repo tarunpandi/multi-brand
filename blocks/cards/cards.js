@@ -1,6 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { renderBlock } from '../../scripts/multi-theme.js';
 
-export default function decorate(block) {
+export function decorateBlock(block) {
   /* change to ul, li */
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
@@ -15,4 +16,8 @@ export default function decorate(block) {
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
   block.append(ul);
+}
+
+export default async function decorate(block) {
+  renderBlock(block);
 }

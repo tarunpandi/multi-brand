@@ -1,0 +1,10 @@
+@import '../columns.css';
+
+/* dark specific code goes here */
+
+/* Always keep .dark scope for brand specific override 
+Example:
+.dark h2 {
+  color: var(--color-token);
+}
+*/
