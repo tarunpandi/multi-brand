@@ -39,47 +39,9 @@ jobs:
               - 'docs/docusaurus.config.ts'
               - 'docs/sidebars.ts'
 
-  # Test documentation build
-  test-docs:
-    needs: check-docs-changes
-    if: needs.check-docs-changes.outputs.docs-changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: docs/package-lock.json
-
-      - name: Install documentation dependencies
-        run: |
-          cd docs
-          npm ci
-
-      - name: Run documentation tests
-        run: |
-          cd docs
-          npm run typecheck
-
-      - name: Build documentation
-        run: |
-          cd docs
-          npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-build
-          path: docs/build
-          retention-days: 1
-
   # Deploy to GitHub Pages
   deploy-docs:
-    needs: [check-docs-changes, test-docs]
+    needs: check-docs-changes
     if: |
       needs.check-docs-changes.outputs.docs-changed == 'true' && 
       github.ref == 'refs/heads/dev-docs'
@@ -109,6 +71,11 @@ jobs:
           cd docs
           npm ci
 
+      - name: Type check documentation
+        run: |
+          cd docs
+          npm run typecheck
+
       - name: Build documentation
         run: |
           cd docs
@@ -121,6 +88,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/build
+          retention-days: 4
 
       - name: Deploy to GitHub Pages
         id: deployment
