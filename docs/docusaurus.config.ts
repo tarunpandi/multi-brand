@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-username.github.io',
+  url: 'https://acs-ui.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/eds-multi-brand/',
+  baseUrl: '/eds-multi-brand-docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'adobe', // Usually your GitHub org/user name.
-  projectName: 'eds-multi-brand', // Usually your repo name.
+  organizationName: 'acs-ui', // Usually your GitHub org/user name.
+  projectName: 'eds-multi-brand-docs', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -50,14 +50,14 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/adobe/eds-multi-brand/tree/main/docs/',
+            'https://github.com/acs-ui/eds-multi-brand/tree/dev-docs/docs/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/adobe/eds-multi-brand/tree/main/docs/',
+            'https://github.com/acs-ui/eds-multi-brand/tree/dev-docs/docs/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -84,7 +84,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/adobe/eds-multi-brand',
+          href: 'https://github.com/acs-ui/eds-multi-brand',
           label: 'GitHub',
           position: 'right',
         },
@@ -136,7 +136,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/adobe/eds-multi-brand',
+              href: 'https://github.com/acs-ui/eds-multi-brand',
             },
           ],
         },
