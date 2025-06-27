@@ -1,4 +1,4 @@
-name: Deploy Documentation to GitHub Pages
+name: Deploy Documentation to External Repository
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
               - 'docs/docusaurus.config.ts'
               - 'docs/sidebars.ts'
 
-  # Deploy to GitHub Pages
+  # Deploy to External Repository
   deploy-docs:
     needs: check-docs-changes
     if: |
@@ -48,12 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
     concurrency:
-      group: "pages"
+      group: "docs-deployment"
       cancel-in-progress: false
     steps:
       - name: Checkout
@@ -81,31 +77,20 @@ jobs:
           cd docs
           npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/build
-          retention-days: 4
-
-      - name: Deploy to GitHub Pages (Current Repo)
-        id: deployment
-        uses: actions/deploy-pages@v4
-
       - name: Deploy to External Repository
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.DEPLOY_KEY }}
           external_repository: ${{ github.repository_owner }}/eds-multi-brand-docs
           publish_dir: ./docs/build
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
 
       - name: Log deployment success
         run: |
-          echo "✅ Documentation deployed to GitHub Pages successfully!"
-          echo "📚 Live URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-          echo "🔗 Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "✅ Documentation deployed successfully!"
+          echo "📚 Live URL: https://${{ github.repository_owner }}.github.io/eds-multi-brand-docs/"
           echo "📝 Changed files:"
           git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' || echo "No markdown files changed"
 
@@ -113,9 +98,9 @@ jobs:
         run: |
           echo "## 📚 Documentation Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **Status**: Successfully deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
-          echo "📚 **Live URL**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 **Deployment URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status**: Successfully deployed to external repository" >> $GITHUB_STEP_SUMMARY
+          echo "📚 **Live URL**: https://${{ github.repository_owner }}.github.io/eds-multi-brand-docs/" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 **Target Repository**: ${{ github.repository_owner }}/eds-multi-brand-docs" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Changed Documentation Files:" >> $GITHUB_STEP_SUMMARY
           git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' | sed 's/^/- `/' | sed 's/$/`/' >> $GITHUB_STEP_SUMMARY || echo "- No markdown files changed" >> $GITHUB_STEP_SUMMARY
@@ -142,6 +127,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `📚 **Documentation Changes Detected**\n\nThis PR contains changes to documentation files:\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nThe documentation will be automatically deployed to GitHub Pages when this PR is merged to dev-docs.`
+                body: `📚 **Documentation Changes Detected**\n\nThis PR contains changes to documentation files:\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nThe documentation will be automatically deployed to \`eds-multi-brand-docs\` repository when this PR is merged to dev-docs.\n\n🌐 **Live URL**: https://${context.repo.owner}.github.io/eds-multi-brand-docs/`
               });
             } 
