@@ -5,3 +5,6 @@ LICENSE
 package.json
 package-lock.json
 test/*
+docs/*
+theme-tools/*
+gulpfile.js

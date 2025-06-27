@@ -13,6 +13,20 @@ Before using the aem-boilerplate, we recommand you to go through the documentati
 3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
 4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
+### Documentation Testing
+
+The project includes automated documentation testing via GitHub Actions:
+
+- **Trigger**: Pull requests with changes to `docs/` files
+- **Scope**: Documentation-only validation
+  - ✅ Documentation linting and type checking
+  - ✅ Build verification
+  - ✅ Internal documentation link validation (port 3030)
+  - ❌ No application link validation (excludes port 3000)
+- **Deployment**: Automatic deployment to GitHub Pages on merge to main
+
+For detailed deployment rules, see [DEPLOYMENT-RULES.md](.github/workflows/DEPLOYMENT-RULES.md).
+
 ## Installation
 
 ```sh
