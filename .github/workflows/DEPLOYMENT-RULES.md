@@ -4,7 +4,7 @@
 
 GitHub Pages deployment will **ONLY** occur when **BOTH** of these conditions are met:
 
-1. ✅ **Merge to main branch** (`refs/heads/main`)
+1. ✅ **Push to dev-docs branch** (`refs/heads/dev-docs`)
 2. ✅ **Markdown files in `docs/` directory are changed**
 
 ## 📋 Specific File Patterns
@@ -74,19 +74,12 @@ README.md
 ## 📊 Workflow Triggers
 
 ### **deploy-docs.yml**
-- **Trigger**: Push to `main` branch
+- **Trigger**: Push to `dev-docs` branch
 - **Condition**: Files matching `docs/**/*.md`, `docs/**/*.mdx`, `docs/docusaurus.config.ts`, `docs/sidebars.ts`
 - **Action**: Deploy to GitHub Pages
 
-### **ci-cd.yml**
-- **Trigger**: Push to `main` or `develop` branches
-- **Condition**: Smart detection based on documentation file changes
-- **Action**: 
-  - `main` + docs changes → GitHub Pages deployment
-  - `develop` + docs changes → Documentation testing only
-
 ### **test-docs.yml**
-- **Trigger**: Pull request to `main` or `develop`
+- **Trigger**: Pull request to `dev-docs`
 - **Condition**: Files matching documentation patterns
 - **Action**: Test documentation build and validate documentation links only
 - **Validation Scope**: 
@@ -116,7 +109,7 @@ filters: |
 # File changed: docs/docs/intro.md
 git add docs/docs/intro.md
 git commit -m "Update introduction documentation"
-git push origin main
+git push origin dev-docs
 
 # Result: ✅ GitHub Pages deployment triggered
 ```
@@ -126,9 +119,9 @@ git push origin main
 # File changed: blocks/hero/hero.css
 git add blocks/hero/hero.css
 git commit -m "Update hero component styles"
-git push origin main
+git push origin dev-docs
 
-# Result: ❌ NO GitHub Pages deployment
+# Result: ❌ NO documentation deployment
 ```
 
 ### **Example 3: Mixed Changes**
@@ -138,7 +131,7 @@ git push origin main
 # - blocks/cards/cards.css
 git add docs/docs/blocks-components.md blocks/cards/cards.css
 git commit -m "Update cards component and documentation"
-git push origin main
+git push origin dev-docs
 
 # Result: ✅ GitHub Pages deployment triggered
 ```
@@ -148,9 +141,9 @@ git push origin main
 # File changed: README.md (outside docs/)
 git add README.md
 git commit -m "Update project README"
-git push origin main
+git push origin dev-docs
 
-# Result: ❌ NO GitHub Pages deployment
+# Result: ❌ NO documentation deployment
 ```
 
 ## 🚀 Deployment URLs
@@ -202,7 +195,7 @@ To exclude certain files from triggering deployment:
 ```yaml
 # In the workflow, add conditions to skip deployment
 if: |
-  github.ref == 'refs/heads/main' &&
+  github.ref == 'refs/heads/dev-docs' &&
   needs.detect-docs-changes.outputs.docs-changed == 'true' &&
   !contains(github.event.head_commit.message, '[skip-docs]')
 ```
@@ -212,7 +205,7 @@ if: |
 ### **Deployment Not Triggered**
 1. Check if changes are in `docs/` directory
 2. Verify file extensions are `.md` or `.mdx`
-3. Ensure merge is to `main` branch
+3. Ensure push is to `dev-docs` branch
 4. Check workflow logs for path filter results
 
 ### **Unexpected Deployment**

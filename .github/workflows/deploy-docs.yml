@@ -2,7 +2,7 @@ name: Deploy Documentation to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev-docs ]
     paths:
       - 'docs/**/*.md'
       - 'docs/**/*.mdx'
@@ -10,7 +10,7 @@ on:
       - 'docs/sidebars.ts'
       - '.github/workflows/deploy-docs.yml'
   pull_request:
-    branches: [ main ]
+    branches: [ dev-docs ]
     paths:
       - 'docs/**'
       - '.github/workflows/deploy-docs.yml'
@@ -83,7 +83,7 @@ jobs:
     needs: [check-docs-changes, test-docs]
     if: |
       needs.check-docs-changes.outputs.docs-changed == 'true' && 
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/dev-docs'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -169,6 +169,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `📚 **Documentation Changes Detected**\n\nThis PR contains changes to documentation files:\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nThe documentation will be automatically deployed to GitHub Pages when this PR is merged to main.`
+                body: `📚 **Documentation Changes Detected**\n\nThis PR contains changes to documentation files:\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nThe documentation will be automatically deployed to GitHub Pages when this PR is merged to dev-docs.`
               });
             } 
