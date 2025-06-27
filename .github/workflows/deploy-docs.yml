@@ -90,9 +90,16 @@ jobs:
           path: docs/build
           retention-days: 4
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (Current Repo)
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deploy to External Repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
+          external_repository: ${{ github.repository_owner }}/eds-multi-brand-docs
+          publish_dir: ./docs/build
 
       - name: Log deployment success
         run: |
