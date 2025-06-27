@@ -1,0 +1,174 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**/*.md'
+      - 'docs/**/*.mdx'
+      - 'docs/docusaurus.config.ts'
+      - 'docs/sidebars.ts'
+      - '.github/workflows/deploy-docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
+      - '**/*.md'
+
+jobs:
+  # Check if documentation changes were made
+  check-docs-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      docs-changed: ${{ steps.filter.outputs.docs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for documentation changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            docs:
+              - 'docs/**/*.md'
+              - 'docs/**/*.mdx'
+              - 'docs/docusaurus.config.ts'
+              - 'docs/sidebars.ts'
+
+  # Test documentation build
+  test-docs:
+    needs: check-docs-changes
+    if: needs.check-docs-changes.outputs.docs-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install documentation dependencies
+        run: |
+          cd docs
+          npm ci
+
+      - name: Run documentation tests
+        run: |
+          cd docs
+          npm run lint
+          npm run typecheck
+
+      - name: Build documentation
+        run: |
+          cd docs
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-build
+          path: docs/build
+          retention-days: 1
+
+  # Deploy to GitHub Pages
+  deploy-docs:
+    needs: [check-docs-changes, test-docs]
+    if: |
+      needs.check-docs-changes.outputs.docs-changed == 'true' && 
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install documentation dependencies
+        run: |
+          cd docs
+          npm ci
+
+      - name: Build documentation
+        run: |
+          cd docs
+          npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Log deployment success
+        run: |
+          echo "✅ Documentation deployed to GitHub Pages successfully!"
+          echo "📚 Live URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "🔗 Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "📝 Changed files:"
+          git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' || echo "No markdown files changed"
+
+      - name: Create deployment summary
+        run: |
+          echo "## 📚 Documentation Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status**: Successfully deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "📚 **Live URL**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **Deployment URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Changed Documentation Files:" >> $GITHUB_STEP_SUMMARY
+          git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' | sed 's/^/- `/' | sed 's/$/`/' >> $GITHUB_STEP_SUMMARY || echo "- No markdown files changed" >> $GITHUB_STEP_SUMMARY
+
+  # Notify on documentation changes
+  notify-docs-changes:
+    needs: check-docs-changes
+    if: |
+      needs.check-docs-changes.outputs.docs-changed == 'true' && 
+      github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changedFiles = context.payload.pull_request.changed_files;
+            const docsFiles = changedFiles.filter(file => 
+              file.includes('docs/') || file.endsWith('.md')
+            );
+            
+            if (docsFiles.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `📚 **Documentation Changes Detected**\n\nThis PR contains changes to documentation files:\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nThe documentation will be automatically deployed to GitHub Pages when this PR is merged to main.`
+              });
+            } 

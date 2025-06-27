@@ -1,0 +1,180 @@
+name: Documentation CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # Check if documentation files have changed
+  detect-docs-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      docs-changed: ${{ steps.filter.outputs.docs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect documentation changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            docs:
+              - 'docs/**/*.md'
+              - 'docs/**/*.mdx'
+              - 'docs/docusaurus.config.ts'
+              - 'docs/sidebars.ts'
+
+  # Test documentation
+  test-docs:
+    needs: detect-docs-changes
+    if: needs.detect-docs-changes.outputs.docs-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install documentation dependencies
+        run: |
+          cd docs
+          npm ci
+
+      - name: Run documentation linting
+        run: |
+          cd docs
+          npm run lint
+
+      - name: Type check documentation
+        run: |
+          cd docs
+          npm run typecheck
+
+      - name: Build documentation
+        run: |
+          cd docs
+          npm run build
+
+  # Deploy documentation to GitHub Pages (main branch ONLY when docs changed)
+  deploy-docs-production:
+    needs: [detect-docs-changes, test-docs]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      needs.detect-docs-changes.outputs.docs-changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install documentation dependencies
+        run: |
+          cd docs
+          npm ci
+
+      - name: Build documentation
+        run: |
+          cd docs
+          npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Log deployment success
+        run: |
+          echo "✅ Documentation deployed to GitHub Pages successfully!"
+          echo "📚 Live URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "🔗 Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "📝 Changed documentation files:"
+          git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' || echo "No markdown files changed"
+
+      - name: Create deployment summary
+        run: |
+          echo "## 📚 Documentation Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status**: Successfully deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+          echo "📚 **Live URL**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **Deployment URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Changed Documentation Files:" >> $GITHUB_STEP_SUMMARY
+          git diff --name-only HEAD~1 HEAD | grep -E '^docs/.*\.(md|mdx)$' | sed 's/^/- `/' | sed 's/$/`/' >> $GITHUB_STEP_SUMMARY || echo "- No markdown files changed" >> $GITHUB_STEP_SUMMARY
+
+  # Summary job
+  summary:
+    needs: [detect-docs-changes, test-docs, deploy-docs-production]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate deployment summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = [];
+            
+            if ('${{ needs.detect-docs-changes.outputs.docs-changed }}' === 'true') {
+              summary.push('📚 **Documentation**: Changes detected and processed');
+            } else {
+              summary.push('📚 **Documentation**: No changes detected');
+            }
+            
+            const deploymentInfo = [];
+            
+            if (context.ref === 'refs/heads/main') {
+              if ('${{ needs.detect-docs-changes.outputs.docs-changed }}' === 'true') {
+                deploymentInfo.push('📚 Documentation deployed to GitHub Pages');
+              } else {
+                deploymentInfo.push('📚 No documentation changes to deploy');
+              }
+            } else if (context.ref === 'refs/heads/develop') {
+              if ('${{ needs.detect-docs-changes.outputs.docs-changed }}' === 'true') {
+                deploymentInfo.push('🧪 Documentation tested (staging branch)');
+              } else {
+                deploymentInfo.push('🧪 No documentation changes to test');
+              }
+            }
+            
+            const body = `## 📚 Documentation CI/CD Summary\n\n${summary.join('\n')}\n\n${deploymentInfo.length > 0 ? '### Actions\n' + deploymentInfo.join('\n') : ''}\n\n✅ All checks completed successfully!`;
+            
+            if (context.eventName === 'pull_request') {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            } 
