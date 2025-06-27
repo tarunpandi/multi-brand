@@ -83,7 +83,6 @@ README.md
 - **Condition**: Files matching documentation patterns
 - **Action**: Test documentation build and validate documentation links only
 - **Validation Scope**: 
-  - ✅ Documentation linting
   - ✅ Type checking
   - ✅ Build verification
   - ✅ Internal documentation link validation (port 3030)
@@ -171,7 +170,6 @@ Each deployment includes:
 ### **Test Results Summary**
 Documentation tests include:
 - ✅ Build Status
-- ✅ Linting Results
 - ✅ Type Check Results
 - ✅ Documentation Link Validation (internal only)
 
@@ -217,7 +215,7 @@ if: |
 ### **Documentation Test Failures**
 1. Check for broken internal documentation links
 2. Verify documentation builds successfully
-3. Review linting and type check errors
+3. Review type check errors
 4. Ensure documentation server starts correctly (port 3030)
 
 ## 📚 Related Documentation

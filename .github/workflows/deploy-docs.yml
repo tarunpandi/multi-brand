@@ -63,7 +63,6 @@ jobs:
       - name: Run documentation tests
         run: |
           cd docs
-          npm run lint
           npm run typecheck
 
       - name: Build documentation

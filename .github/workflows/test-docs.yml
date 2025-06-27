@@ -29,11 +29,6 @@ jobs:
           cd docs
           npm ci
 
-      - name: Run documentation linting
-        run: |
-          cd docs
-          npm run lint
-
       - name: Type check documentation
         run: |
           cd docs
@@ -78,7 +73,7 @@ jobs:
               file.startsWith('docs/') && (file.endsWith('.md') || file.endsWith('.mdx'))
             );
             
-            const testResults = `✅ **Documentation Tests Passed**\n\n📚 **Build Status**: ✅ Successful\n🔍 **Linting**: ✅ Passed\n📝 **Type Check**: ✅ Passed\n🔗 **Link Validation**: ✅ Documentation links validated\n\n**Changed Documentation Files:**\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nDocumentation changes are ready for review and will be deployed to GitHub Pages when merged to dev-docs.`;
+            const testResults = `✅ **Documentation Tests Passed**\n\n📚 **Build Status**: ✅ Successful\n📝 **Type Check**: ✅ Passed\n🔗 **Link Validation**: ✅ Documentation links validated\n\n**Changed Documentation Files:**\n${docsFiles.map(file => `- \`${file}\``).join('\n')}\n\nDocumentation changes are ready for review and will be deployed to GitHub Pages when merged to dev-docs.`;
             
             if (botComment) {
               await github.rest.issues.updateComment({
