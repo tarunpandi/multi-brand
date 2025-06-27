@@ -529,6 +529,6 @@ npm run test:browser
 
 ## Getting Help
 
-- Check the [component examples](./examples) for usage patterns
-- Review the [theme integration guide](./theme-integration)
+- Review the component documentation in this guide
+- Check the [theme management guide](./theme-management) for theming information
 - Report component issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues) 

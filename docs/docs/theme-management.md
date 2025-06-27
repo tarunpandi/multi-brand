@@ -265,6 +265,6 @@ This will:
 
 ### Getting Help
 
-- Check the [theme-tools documentation](./theme-tools)
-- Review the [Gulp build configuration](./build-config)
+- Review the theme management documentation in this guide
+- Check the [blocks and components guide](./blocks-components) for component theming
 - Report issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues) 

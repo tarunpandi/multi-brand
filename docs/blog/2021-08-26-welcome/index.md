@@ -1,11 +1,11 @@
 ---
 slug: welcome
-title: "Welcome to EDS Multi-Brand Documentation"
+title: "Welcome to AEM Multi-Brand Documentation"
 authors: [adobe-team]
 tags: [aem, multi-brand, documentation, welcome]
 ---
 
-Welcome to the EDS Multi-Brand project documentation! This site provides comprehensive developer documentation for building and managing multi-brand experiences with Adobe Experience Manager.
+Welcome to the AEM Multi-Brand project documentation! This site provides comprehensive developer documentation for building and managing multi-brand experiences with Adobe Experience Manager.
 
 <!-- truncate -->
 
@@ -20,11 +20,11 @@ This documentation covers:
 
 ## Project Structure
 
-The EDS Multi-Brand project is organized to support multiple brands with shared components and brand-specific customizations. Each brand can have its own theme while sharing common functionality.
+The AEM Multi-Brand project is organized to support multiple brands with shared components and brand-specific customizations. Each brand can have its own theme while sharing common functionality.
 
 ## Getting Started
 
-To get started with the EDS Multi-Brand project:
+To get started with the AEM Multi-Brand project:
 
 1. **Install dependencies**: `npm install`
 2. **Initialize a new theme**: `npm run theme:init`
@@ -32,7 +32,7 @@ To get started with the EDS Multi-Brand project:
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](../CONTRIBUTING.md) for details on how to submit pull requests and report issues.
+We welcome contributions! Please create an issue or submit a pull request on GitHub for any improvements or bug reports.
 
 ## Support
 
