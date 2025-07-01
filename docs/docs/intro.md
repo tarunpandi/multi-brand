@@ -96,7 +96,6 @@ eds-multi-brand/
 ├── scripts/                  # Scripts
 └── docs/                     # This documentation
 ```
-
 ## Environments
 
 - **Preview**: https://main--eds-multi-brand--acs-ui.aem.page/
