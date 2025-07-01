@@ -267,4 +267,4 @@ This will:
 
 - Review the theme management documentation in this guide
 - Check the [blocks and components guide](./blocks-components) for component theming
-- Report issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues) 
+- Report issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 

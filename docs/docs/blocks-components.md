@@ -531,4 +531,4 @@ npm run test:browser
 
 - Review the component documentation in this guide
 - Check the [theme management guide](./theme-management) for theming information
-- Report component issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues) 
+- Report component issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 

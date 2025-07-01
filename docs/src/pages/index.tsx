@@ -21,7 +21,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            EDS Multi-Brand Tutorial - 5min ⏱️
+            EDS Multi-Brand Tutorial
           </Link>
         </div>
       </div>
@@ -33,8 +33,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`${siteConfig.title}`}
+      description="Multi brand EDS project boilerplate <head />">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

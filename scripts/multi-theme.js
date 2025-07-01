@@ -1,7 +1,7 @@
 import { sampleRUM, loadCSS, getMetadata } from './aem.js';
 
 export function getBrandCode() {
-  return getMetadata('brand') || 'dark';
+  return getMetadata('brand') || '';
 }
 
 const brandCode = getBrandCode();

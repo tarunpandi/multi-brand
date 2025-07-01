@@ -403,6 +403,6 @@ aem logs --env prod
 ## Getting Help
 
 - **Documentation**: Check this guide and project README
-- **Issues**: Report deployment issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues)
+- **Issues**: Report deployment issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues)
 - **Support**: Contact the DevOps team for urgent deployment issues
 - **Community**: Join the [AEM Community](https://discordapp.com/invite/aem) for help 

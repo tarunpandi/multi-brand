@@ -103,61 +103,87 @@ async function generateBrandCSSForFolderWithSubFolders(
       );
     });
 }
-/* disabling theme file generation for react-app */
-// async function generateBrandCSSForReact(
-//   brandCode,
-//   codeDir,
-// ) {
-//   const files = await fs.readdirSync(codeDir);
-//   files.forEach(async (file) => {
-//     if (file.endsWith('css')) {
-//       const brandDir = path.join(codeDir, brandCode);
 
-//       if (!fs.existsSync(brandDir)) {
-//         fs.mkdirSync(brandDir);
-//       }
+async function generateBlockConfigFiles(brandCode, blocksDir) {
+  console.log(`Generating block-config.js files for ${brandCode}...`);
+  
+  const templatePath = path.join(__dirname, 'plop-templates', 'index.block-config.js');
+  let templateContent = '';
+  
+  try {
+    templateContent = fs.readFileSync(templatePath, 'utf8');
+  } catch (err) {
+    console.log(`Template file not found at ${templatePath}, using default template...`);
+    templateContent = `// import { beforeDecorate, decorateBlock, afterDecorate } from './{{blockName}}.js';
 
-//       const dest = path.join(brandDir, `_${file}`);
-//       const content = `@import '../${file}';
+export default async function getBlockConfigs() {
+  return {
+    flags: {
+      // flag: true,
+    },
+    variations: [
+      // { variation: 'multi-column-category-banner', module: 'multi-column-cat-banner.js' },
+    ],
+    decorations: {
+    //   beforeDecorate: async (ctx, blockConfig) => beforeDecorate(ctx, blockConfig),
+    //   decorate: async (ctx, blockConfig) => decorateBlock(ctx, blockConfig),
+    //   afterDecorate: async (ctx, blockConfig) => afterDecorate(ctx, blockConfig),
+    },
+  };
+}`;
+  }
 
-// /* ${brandCode} specific code goes here */
+  const blockFolders = fs.readdirSync(blocksDir)
+    .filter(file => fs.statSync(path.join(blocksDir, file)).isDirectory() && !file.startsWith('.'));
 
-// /* Always keep .${brandCode} scope for brand specific override
-// Example:
-// .${brandCode} h2 {
-//   color: var(--color-token);
-// }
-// */
-// `;
+  blockFolders.forEach(async (blockName) => {
+    // Create block-config.js in the brand-specific folder: blocks/{{name}}/{{brand}}/
+    const brandBlockDir = path.join(blocksDir, blockName, brandCode);
+    const blockConfigPath = path.join(brandBlockDir, 'block-config.js');
+    
+    // Ensure the brand directory exists
+    if (!fs.existsSync(brandBlockDir)) {
+      fs.mkdirSync(brandBlockDir, { recursive: true });
+    }
+    
+    // Check if block-config.js already exists in the brand folder
+    if (fs.existsSync(blockConfigPath)) {
+      console.log(`block-config.js exists in ${blockName}/${brandCode}  ....\t\t\t[SKIPPED]`);
+      return;
+    }
 
-//       let fileExists = false;
-//       const relativePath = dest;
+    // Replace template variables
+    let content = templateContent.replace(/\{\{blockName\}\}/g, blockName);
+    
+    // Add brand-specific comment and import the main block file
+    content = `// ${brandCode} specific block configuration
+// import { beforeDecorate, decorateBlock, afterDecorate } from '../${blockName}.js';
 
-//       try {
-//         const stats = await fs.statSync(dest);
-//         if (stats?.isFile()) {
-//           fileExists = true;
-//         }
-//       } catch (err) {
-//         fileExists = false;
-//       }
+export default async function getBlockConfigs() {
+  return {
+    flags: {
+      // flag: true,
+    },
+    variations: [
+      // { variation: 'multi-column-category-banner', module: 'multi-column-cat-banner.js' },
+    ],
+    decorations: {
+    //   beforeDecorate: async (ctx, blockConfig) => beforeDecorate(ctx, blockConfig),
+    //   decorate: async (ctx, blockConfig) => decorateBlock(ctx, blockConfig),
+    //   afterDecorate: async (ctx, blockConfig) => afterDecorate(ctx, blockConfig),
+    },
+  };
+}`;
 
-//       if (fileExists) {
-//         console.log(`File ${relativePath} exists  ....\t\t\t[SKIPPED]`);
-//       } else {
-//         fs.writeFile(dest, content, (err) => {
-//           if (err) {
-//             console.log(`File ${relativePath} created  ....\t\t\t[ERROR]`);
-//           } else {
-//             console.log(`File ${relativePath} created  ....\t\t\t[OK]`);
-//           }
-//         });
-//       }
-//     } else if (fs.statSync(path.join(codeDir, file)).isDirectory() && !brands.includes(file)) {
-//       generateBrandCSSForReact(brandCode, path.join(codeDir, file));
-//     }
-//   });
-// }
+    try {
+      fs.writeFileSync(blockConfigPath, content);
+      console.log(`block-config.js created in ${blockName}/${brandCode}  ....\t\t\t[OK]`);
+    } catch (err) {
+      console.log(`block-config.js creation failed in ${blockName}/${brandCode}  ....\t\t\t[ERROR]`);
+      console.error(err);
+    }
+  });
+}
 
 async function generateBrandCSS(brandCode) {
   console.log(`Generating Brand CSS for ${brandCode}...`);
@@ -186,6 +212,8 @@ async function generateBrandCSS(brandCode) {
 
   if (fs.existsSync(blocksDir)) {
     await generateBrandCSSForFolderWithSubFolders(brandCode, blocksDir);
+    // generate for block-config.js inside blocks folder, use index.block-config.js as template
+    await generateBlockConfigFiles(brandCode, blocksDir);
   } else {
     console.log(`Blocks directory ${blocksDir} does not exist, skipping...`);
   }
@@ -207,27 +235,6 @@ async function generateBrandCSS(brandCode) {
   } else {
     console.log(`Styles directory ${stylesDir} does not exist, skipping...`);
   }
-
-  /* disabling theme file generation for react-app
-  // generate for react components
-  const reactDir = path.join(currentDir, 'react-app');
-  // find all folder where css files are present and generate brand css
-  const reactFolders = await fs.readdirSync(reactDir);
-  reactFolders
-    .filter(
-      (file) => fs.statSync(path.join(reactDir, file)).isDirectory()
-        && !file.startsWith('.'),
-    )
-    .forEach(async (folder) => {
-      const folderDir = path.join(reactDir, folder);
-      // const cssFiles = await fs.readdirSync(folderDir).filter((file) => file.endsWith('.css'));
-      // console.log(`CSS Files: ${cssFiles}`);
-      // if (cssFiles.length > 0) {
-      console.log(`Generating Brand CSS for ${folder}...`);
-      await generateBrandCSSForReact(brandCode, folderDir);
-      // }
-    });
-  */
 }
 
 const rl = readline.createInterface({

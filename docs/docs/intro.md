@@ -4,16 +4,15 @@ sidebar_position: 1
 
 # Introduction
 
-Welcome to the EDS Multi-Brand project documentation! This project is a starter template for Adobe Experience Manager (AEM) with multi-brand support, built on the Adobe Helix framework.
+Welcome to the EDS Multi-Brand project documentation! This project is a starter template for EDS with multi-brand support, built on the [Adobe AEM Boilerplate](https://github.com/adobe/aem-boilerplate).
 
 ## What is EDS Multi-Brand?
 
 EDS Multi-Brand is a powerful starter project that enables you to create and manage multiple brand themes within a single AEM project. It provides:
 
 - **Multi-brand theme support** - Create and manage different brand themes
-- **Component-based architecture** - Reusable blocks and components
+- **Componentized architecture** - Manage themes and configurations of block per brand
 - **Modern development workflow** - Hot reloading, linting, and build tools
-- **Performance optimized** - Built with web performance best practices
 
 ## Quick Start
 
@@ -27,7 +26,7 @@ EDS Multi-Brand is a powerful starter project that enables you to create and man
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/adobe/eds-multi-brand.git
+git clone https://github.com/acs-ui/eds-multi-brand.git
 cd eds-multi-brand
 ```
 
@@ -50,19 +49,52 @@ This will:
 
 ```
 eds-multi-brand/
-├── blocks/           # Reusable UI components
-│   ├── cards/       # Card components
-│   ├── columns/     # Layout components
-│   ├── footer/      # Footer component
-│   ├── header/      # Header component
-│   ├── hero/        # Hero section component
-│   └── tabs/        # Tab components
-├── styles/          # Global styles and themes
-│   ├── dark/        # Dark theme styles
-│   └── ...          # Light theme styles
-├── theme-tools/     # Theme management utilities
-├── scripts/         # AEM-specific scripts
-└── docs/           # This documentation
+├── blocks/                    # Reusable UI components
+│   ├── cards/                # Card components
+│   │   ├── cards.css         # Base card styles
+│   │   ├── cards.js          # Base card functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _cards.css    # Brand-specific card styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   ├── columns/              # Layout components
+│   │   ├── columns.css       # Base column styles
+│   │   ├── columns.js        # Base column functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _columns.css  # Brand-specific column styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   ├── footer/               # Footer component
+│   │   ├── footer.css        # Base footer styles
+│   │   ├── footer.js         # Base footer functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _footer.css   # Brand-specific footer styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   ├── header/               # Header component
+│   │   ├── header.css        # Base header styles
+│   │   ├── header.js         # Base header functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _header.css   # Brand-specific header styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   └── ...                   # More block types
+├── styles/                   # Global styles and themes
+│   ├── styles.css            # Base styles
+│   ├── fonts.css             # Base fonts
+│   ├── tokens.css            # Base design tokens
+│   ├── brand-name/           # Brand-specific styles
+│   │   ├── _styles.css       # Brand-specific overrides
+│   │   ├── _fonts.css        # Brand-specific fonts
+│   │   └── _tokens.css       # Brand-specific design tokens
+│   └── ...                   # More brands
+├── theme-tools/              # Theme management utilities
+├── scripts/                  # Scripts
+└── docs/                     # This documentation
 ```
 
 ## Environments
@@ -73,7 +105,7 @@ eds-multi-brand/
 ## Next Steps
 
 - [Theme Management](./theme-management) - Learn how to create and manage brand themes
-- [Blocks & Components](./blocks-components) - Explore available UI components
+- [Blocks](./blocks-components) - Explore available UI components
 - [Development Workflow](./development-workflow) - Understand the development process
 - [Deployment](./deployment) - Deploy your project to AEM
 
@@ -81,4 +113,6 @@ eds-multi-brand/
 
 - Check the [AEM Documentation](https://www.aem.live/docs/)
 - Join the [AEM Community](https://discordapp.com/invite/aem)
-- Report issues on [GitHub](https://github.com/adobe/eds-multi-brand/issues)
+- Report issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues)
+
+

@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'EDS Multi-Brand Documentation',
-  tagline: 'Developer documentation for Adobe Experience Manager Multi-Brand project',
+  tagline: 'Developer documentation for EDS Multi-Brand project',
   favicon: 'img/adobe-franklin-logo.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -52,13 +52,13 @@ const config: Config = {
           editUrl:
             'https://github.com/acs-ui/eds-multi-brand/tree/dev-docs/docs/',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/acs-ui/eds-multi-brand/tree/dev-docs/docs/',
-        },
+        // blog: {
+        //   showReadingTime: true,
+        //   // Please change this to your repo.
+        //   // Remove this to remove the "edit this page" links.
+        //   editUrl:
+        //     'https://github.com/acs-ui/eds-multi-brand/tree/dev-docs/docs/',
+        // },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -82,7 +82,7 @@ const config: Config = {
           position: 'left',
           label: 'Documentation',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        // {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/acs-ui/eds-multi-brand',
           label: 'GitHub',
@@ -105,7 +105,7 @@ const config: Config = {
               to: '/docs/theme-management',
             },
             {
-              label: 'Blocks & Components',
+              label: 'Blocks',
               to: '/docs/blocks-components',
             },
           ],
@@ -130,10 +130,10 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
+            // {
+            //   label: 'Blog',
+            //   to: '/blog',
+            // },
             {
               label: 'GitHub',
               href: 'https://github.com/acs-ui/eds-multi-brand',
@@ -141,7 +141,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Adobe Inc. Built with Docusaurus.`,
+      copyright: `Copyright &copy; ${new Date().getFullYear()} ACS.`,
     },
     prism: {
       theme: prismThemes.github,

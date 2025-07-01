@@ -26,7 +26,7 @@ export default function (plop) {
         type: 'list',
         name: 'type',
         message: 'What do you want to create?',
-        choices: ['Block', 'React Component', 'Theme'],
+        choices: ['Block', 'Theme'],
       },
       {
         type: 'input',
@@ -40,16 +40,21 @@ export default function (plop) {
       let actions = [
         {
           type: 'add',
-          path: data.type === 'Block' ? `blocks/{{name}}/{{name}}.${ext}` : `react-app/app/{{name}}/{{name}}.${ext}`,
-          templateFile: `theme-tools/plop-templates/${ext}-template/index.${ext}.template`,
+          path: data.type === 'Block' ? `../blocks/{{name}}/{{name}}.${ext}` : `react-app/app/{{name}}/{{name}}.${ext}`,
+          templateFile: `plop-templates/${ext}-template/index.${ext}.template`,
         },
       ];
       switch (data.type) {
         case 'Block':
           actions.push({
             type: 'add',
-            path: 'blocks/{{name}}/{{name}}.css',
-            templateFile: 'theme-tools/plop-templates/index.css.template',
+            path: '../blocks/{{name}}/{{name}}.css',
+            templateFile: 'plop-templates/index.css.template',
+          });
+          actions.push({
+            type: 'add',
+            path: '../blocks/{{name}}/block-config.js',
+            templateFile: 'plop-templates/index.block-config.js',
           });
           break;
         case 'React Component':

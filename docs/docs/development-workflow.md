@@ -22,7 +22,7 @@ Before starting development, ensure you have:
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/adobe/eds-multi-brand.git
+git clone https://github.com/acs-ui/eds-multi-brand.git
 cd eds-multi-brand
 ```
 
@@ -393,6 +393,6 @@ npm run theme:start -- --debug
 ## Getting Help
 
 - **Documentation**: Check this guide and project README
-- **Issues**: Report bugs on [GitHub](https://github.com/adobe/eds-multi-brand/issues)
+- **Issues**: Report bugs on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues)
 - **Community**: Join the [AEM Community](https://discordapp.com/invite/aem)
 - **Support**: Contact the development team for urgent issues 
