@@ -1,4 +1,4 @@
-// import { beforeDecorate, decorateBlock, afterDecorate } from './cards.js';
+// import { beforeDecorate, decorateBlock, afterDecorate } from '../{{name}}.js';
 
 export default async function getBlockConfigs() {
   return {

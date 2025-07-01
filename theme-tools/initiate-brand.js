@@ -21,34 +21,40 @@ async function generateBrandCSSForFolder(
   );
 
   files
-    .filter((file) => file.endsWith('.css'))
+    .filter((file) => file.endsWith('.css') && !file.startsWith('_') && file !== '.css')
     .forEach(async (file) => {
       const relativePath = fileName
         ? path.relative(codeDir, path.join(codeDir, fileName, file))
         : path.relative(codeDir, file);
       const dest = path.join(brandDir, `_${file}`);
-      let content = `@import '../${file}';
+      let content = '';
 
-/* ${brandCode} specific code goes here */
-
-/* Always keep .${brandCode} scope for brand specific override 
-Example:
-.${brandCode} h2 {
-  color: var(--color-token);
-}
-*/
-`;
-
-      if (isStyleFolder) {
+      // For styles/brand/ special files
+      if (
+        isStyleFolder &&
+        (file === 'styles.css' || file === 'fonts.css' || file === 'tokens.css')
+      ) {
         if (file === 'styles.css') {
-          content = `
-@import '../styles.css';
-
-/* ${brandCode} specific style goes here */`;
+          content = `\n@import '../styles.css';\n\n/* ${brandCode} specific style goes here */`;
         } else if (file === 'fonts.css') {
           content = `/* ${brandCode} specific fonts go here */`;
         } else if (file === 'tokens.css') {
           content = await fs.readFileSync(path.join(codeDir, file), 'utf8');
+        }
+      } else {
+        // Use the plop template for all other brand CSS
+        const templatePath = path.join(__dirname, 'plop-templates', 'index.css.template');
+        try {
+          let template = fs.readFileSync(templatePath, 'utf8');
+          // Determine block/theme name
+          let blockOrThemeName = fileName || path.basename(codeDir);
+          // Remove .css extension if present
+          if (blockOrThemeName.endsWith('.css')) {
+            blockOrThemeName = blockOrThemeName.replace(/\.css$/, '');
+          }
+          content = template.replace(/\{\{name\}\}/g, blockOrThemeName);
+        } catch (e) {
+          content = `/* ${brandCode} specific code goes here */\n`;
         }
       }
 
@@ -241,7 +247,7 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-rl.question('Enter Brand code:', (brandCode) => {
+rl.question('Enter Brand Name:', (brandCode) => {
   console.log(`Brand code entered: ${brandCode}`);
 
   rl.question('Generate Brand CSS (y/n):', async (agree) => {

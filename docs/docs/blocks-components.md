@@ -2,21 +2,9 @@
 sidebar_position: 3
 ---
 
-# Blocks & Components
+# Blocks Development
 
 EDS Multi-Brand provides a comprehensive set of reusable UI components (blocks) that can be themed and customized for different brands. This guide covers all available components and how to use them.
-
-## Overview
-
-The project includes the following core components:
-
-- **Cards** - Display content in card format
-- **Columns** - Layout components for responsive grids
-- **Footer** - Site footer with navigation and branding
-- **Fragment** - Content fragments for dynamic content
-- **Header** - Site header with navigation
-- **Hero** - Hero sections for landing pages
-- **Tabs** - Tabbed content interfaces
 
 ## Component Structure
 
@@ -31,450 +19,426 @@ blocks/component-name/
     ├── component-name.css
     └── block-config.js
 ```
+## Base CSS and JS Structure
 
-## Cards Component
+Each block in the EDS Multi-Brand project follows a consistent structure with three main files:
 
-The Cards component displays content in a responsive card layout.
+### **Block File Structure**
 
-### Usage
-
-```html
-<div class="cards">
-  <div class="card">
-    <div class="card-image">
-      <img src="image.jpg" alt="Card image">
-    </div>
-    <div class="card-content">
-      <h3 class="card-title">Card Title</h3>
-      <p class="card-description">Card description text.</p>
-      <a href="#" class="card-link">Learn More</a>
-    </div>
-  </div>
-</div>
+```
+blocks/block-name/
+├── block-name.css      # Base styles for the block
+├── block-name.js       # Base functionality and logic
+└── block-config.js     # Block configuration and exports
 ```
 
-### Configuration
+### **Base CSS File (`block-name.css`)**
 
-```javascript
-// blocks/cards/block-config.js
-export default {
-  name: 'cards',
-  label: 'Cards',
-  fields: [
-    {
-      name: 'cards',
-      type: 'array',
-      label: 'Cards',
-      items: [
-        {
-          name: 'image',
-          type: 'image',
-          label: 'Card Image'
-        },
-        {
-          name: 'title',
-          type: 'text',
-          label: 'Card Title'
-        },
-        {
-          name: 'description',
-          type: 'text',
-          label: 'Card Description'
-        },
-        {
-          name: 'link',
-          type: 'link',
-          label: 'Card Link'
-        }
-      ]
-    }
-  ]
-};
-```
-
-### Customization
-
-Cards can be customized with different layouts and styles:
+The base CSS file contains the core styles that are shared across all brands:
 
 ```css
-/* Custom card styles */
-.cards {
+/* Example: blocks/cards/cards.css */
+.cards > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  grid-gap: 24px;
 }
 
-.card {
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+.cards > ul > li {
+  border: 1px solid #dadada;
+  background-color: var(--background-color);
 }
 
-.card:hover {
-  transform: translateY(-4px);
+.cards .cards-card-body {
+  margin: 16px;
+}
+
+.cards .cards-card-image {
+  line-height: 0;
+}
+
+.cards > ul > li img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
 }
 ```
 
-## Columns Component
+**Key Characteristics to be considered:**
+- ✅ **CSS Custom Properties**: Uses `var(--property-name)` for themeable values
+- ✅ **Semantic Class Names**: Descriptive class names that reflect the component structure
+- ✅ **Responsive Design**: Built with mobile-first responsive principles
+- ✅ **Accessibility**: Includes proper focus states and keyboard navigation
+- ✅ **Performance**: Optimized for rendering performance
 
-The Columns component provides flexible layout options for content organization.
+### **Base JavaScript File (`block-name.js`)**
 
-### Usage
-
-```html
-<div class="columns">
-  <div class="column">
-    <h2>Column 1</h2>
-    <p>Content for the first column.</p>
-  </div>
-  <div class="column">
-    <h2>Column 2</h2>
-    <p>Content for the second column.</p>
-  </div>
-</div>
-```
-
-### Configuration
+The base JS file handles the block's functionality and DOM manipulation:
 
 ```javascript
-// blocks/columns/block-config.js
-export default {
-  name: 'columns',
-  label: 'Columns',
-  fields: [
-    {
-      name: 'columns',
-      type: 'array',
-      label: 'Columns',
-      items: [
-        {
-          name: 'content',
-          type: 'rich-text',
-          label: 'Column Content'
-        }
-      ]
+/* Example: blocks/cards/cards.js */
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { renderBlock } from '../../scripts/multi-theme.js';
+
+export function decorateBlock(block) {
+  /* change to ul, li */
+  const ul = document.createElement('ul');
+  [...block.children].forEach((row) => {
+    const li = document.createElement('li');
+    while (row.firstElementChild) li.append(row.firstElementChild);
+    [...li.children].forEach((div) => {
+      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
+      else div.className = 'cards-card-body';
+    });
+    ul.append(li);
+  });
+  ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
+  block.textContent = '';
+  block.append(ul);
+}
+
+export default async function decorate(block) {
+  renderBlock(block);
+}
+```
+
+**Key Functions:**
+- **`decorateBlock(block)`**: Main function that transforms the block's DOM structure
+- **`decorate(block)`**: Default export that handles theme rendering
+- **DOM Manipulation**: Converts author content into the desired structure
+- **Image Optimization**: Uses AEM's image optimization utilities
+
+### **Block Configuration (`block-config.js`)**
+
+The configuration for the block's settings and decoration hooks:
+
+```javascript
+/* Example: blocks/cards/block-config.js */
+import { decorateBlock } from './cards.js';
+
+// import { beforeDecorate, decorateBlock, afterDecorate } from './cards.js';
+
+export default async function getBlockConfigs() {
+  return {
+    flags: {
+      // flag: true,
     },
-    {
-      name: 'layout',
-      type: 'select',
-      label: 'Layout',
-      options: [
-        { value: '2-columns', label: '2 Columns' },
-        { value: '3-columns', label: '3 Columns' },
-        { value: '4-columns', label: '4 Columns' }
-      ]
-    }
-  ]
-};
+    decorations: {
+    //   beforeDecorate: async (ctx, blockConfig) => beforeDecorate(ctx, blockConfig),
+    //   decorate: async (ctx, blockConfig) => decorateBlock(ctx, blockConfig),
+    //   afterDecorate: async (ctx, blockConfig) => afterDecorate(ctx, blockConfig),
+    },
+    variations: [
+      // { variation: 'multi-column-category-banner', module: 'multi-column-cat-banner.js' },
+    ],
+  };
+}
 ```
 
-### Responsive Behavior
+**Configuration Options:**
+- **`flags`**: Feature flags for conditional functionality
+- **`decorations`**: Hooks for brand-level customization and overrides
+- **`variations`**: Different visual variations of the block (executed after decorations)
 
-Columns automatically stack on mobile devices:
+### **Usage Guidelines**
 
-```css
-.columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+#### **Flags**
+Flags should be used when a feature is needed in more than one brand and needs to be part of the base component, toggled at the brand level.
+
+**When to use:**
+- Feature is shared across multiple brands
+- Feature needs to be enabled/disabled per brand
+- Feature affects the base component behavior
+
+**Value type:** Boolean (`true`/`false`)
+
+**Example:**
+```javascript
+export default async function getBlockConfigs() {
+  return {
+    flags: {
+      enableAnimation: true,      // Enable smooth animations
+      showBadge: false,           // Show promotional badges
+      compactLayout: true,        // Use compact layout variant
+    },
+    // ... other config
+  };
+}
+```
+
+**Usage in JavaScript:**
+```javascript
+// Example: blocks/cards/cards.js
+export async function decorateBlock(ctx, blockConfig) {
+  // Access flags from block configuration
+  const { flags } = blockConfig;
+  
+  // Use flags to conditionally apply features
+  if (flags?.enableAnimation) {
+    ctx.classList.add('animated');
+  }
+  
+  if (flags?.showBadge) {
+    addPromotionalBadges(ctx);
+  }
+  
+  if (flags?.compactLayout) {
+    ctx.classList.add('compact');
+  }
+  
+  // Base decoration logic
+  const cards = ctx.querySelectorAll('.card');
+  cards.forEach(card => {
+    // Standard card decoration
+    decorateCard(card);
+  });
 }
 
-@media (max-width: 768px) {
-  .columns {
-    grid-template-columns: 1fr;
+// Helper function example
+function addPromotionalBadges(container) {
+  const cards = container.querySelectorAll('.card');
+  cards.forEach(card => {
+    const badge = document.createElement('div');
+    badge.className = 'promo-badge';
+    badge.textContent = 'New';
+    card.appendChild(badge);
+  });
+}
+
+function decorateCard(card) {
+  // Standard card decoration logic
+  const image = card.querySelector('img');
+  if (image) {
+    image.setAttribute('loading', 'lazy');
   }
 }
 ```
 
-## Header Component
+#### **Variations**
+Variations should be used for brand-specific visual variations that are kept in separate files.
 
-The Header component provides site navigation and branding.
+**Important:** Variations will be executed only after completing the execution of decoration hooks if configured.
 
-### Usage
+**Default Export Required:** The variation file must export a default function that will be invoked.
 
-```html
-<header class="header">
-  <div class="header-brand">
-    <img src="adobe-franklin-logo.svg" alt="Adobe Franklin Logo" class="header-logo">
-    <h1 class="header-title">Site Title</h1>
-  </div>
-  <nav class="header-nav">
-    <ul class="nav-list">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/about" class="nav-link">About</a></li>
-      <li><a href="/contact" class="nav-link">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+**When to use:**
+- Brand-specific visual variations
+- Complex variations that warrant separate files
+- Variations that need their own CSS/JS logic
+
+**Structure:**
+```javascript
+export default async function getBlockConfigs() {
+  return {
+    decorations: {
+      // decoration hooks here
+    },
+    variations: [
+      { 
+        variation: 'compact-cards', 
+        module: 'compact-cards.js' 
+      },
+    ],
+    // ... other config
+  };
+}
 ```
 
-### Configuration
+**File structure:**
+```
+blocks/cards/
+├── cards.css              # Base styles
+├── cards.js               # Base functionality
+├── block-config.js        # Configuration
+├── compact-cards.js       # Compact variation
+└── compact-cards.css      # Compact styles
+```
 
+**Example variation file:**
 ```javascript
-// blocks/header/block-config.js
-export default {
-  name: 'header',
-  label: 'Header',
-  fields: [
-    {
-      name: 'logo',
-      type: 'image',
-      label: 'Site Logo'
-    },
-    {
-      name: 'title',
-      type: 'text',
-      label: 'Site Title'
-    },
-    {
-      name: 'navigation',
-      type: 'array',
-      label: 'Navigation Items',
-      items: [
-        {
-          name: 'label',
-          type: 'text',
-          label: 'Link Label'
-        },
-        {
-          name: 'url',
-          type: 'text',
-          label: 'Link URL'
-        }
-      ]
+// Example: blocks/cards/compact-cards.js
+import './compact-cards.css';
+
+// Default export function will be invoked from the variation file
+export default async function decorateVariation(ctx, blockConfig) {
+  // Add compact variation class
+  ctx.classList.add('compact-cards');
+  
+  // Compact-specific decoration logic
+  const cards = ctx.querySelectorAll('.card');
+  cards.forEach(card => {
+    // Apply compact styling
+    card.classList.add('compact');
+    
+    // Reduce image size for compact layout
+    const image = card.querySelector('img');
+    if (image) {
+      image.classList.add('compact-image');
     }
-  ]
-};
-```
-
-## Hero Component
-
-The Hero component creates impactful landing page sections.
-
-### Usage
-
-```html
-<section class="hero">
-  <div class="hero-content">
-    <h1 class="hero-title">Welcome to Our Site</h1>
-    <p class="hero-description">A compelling description of your product or service.</p>
-    <div class="hero-actions">
-      <a href="#" class="btn btn-primary">Get Started</a>
-      <a href="#" class="btn btn-secondary">Learn More</a>
-    </div>
-  </div>
-  <div class="hero-image">
-    <img src="hero-image.jpg" alt="Hero image">
-  </div>
-</section>
-```
-
-### Configuration
-
-```javascript
-// blocks/hero/block-config.js
-export default {
-  name: 'hero',
-  label: 'Hero Section',
-  fields: [
-    {
-      name: 'title',
-      type: 'text',
-      label: 'Hero Title'
-    },
-    {
-      name: 'description',
-      type: 'text',
-      label: 'Hero Description'
-    },
-    {
-      name: 'image',
-      type: 'image',
-      label: 'Hero Image'
-    },
-    {
-      name: 'actions',
-      type: 'array',
-      label: 'Call to Action Buttons',
-      items: [
-        {
-          name: 'label',
-          type: 'text',
-          label: 'Button Label'
-        },
-        {
-          name: 'url',
-          type: 'text',
-          label: 'Button URL'
-        },
-        {
-          name: 'style',
-          type: 'select',
-          label: 'Button Style',
-          options: [
-            { value: 'primary', label: 'Primary' },
-            { value: 'secondary', label: 'Secondary' }
-          ]
-        }
-      ]
+    
+    // Hide description in compact mode
+    const description = card.querySelector('.description');
+    if (description) {
+      description.style.display = 'none';
     }
-  ]
-};
-```
-
-## Tabs Component
-
-The Tabs component creates tabbed content interfaces.
-
-### Usage
-
-```html
-<div class="tabs">
-  <div class="tabs-nav">
-    <button class="tab-button active" data-tab="tab1">Tab 1</button>
-    <button class="tab-button" data-tab="tab2">Tab 2</button>
-    <button class="tab-button" data-tab="tab3">Tab 3</button>
-  </div>
-  <div class="tabs-content">
-    <div class="tab-panel active" id="tab1">
-      <h3>Tab 1 Content</h3>
-      <p>Content for the first tab.</p>
-    </div>
-    <div class="tab-panel" id="tab2">
-      <h3>Tab 2 Content</h3>
-      <p>Content for the second tab.</p>
-    </div>
-    <div class="tab-panel" id="tab3">
-      <h3>Tab 3 Content</h3>
-      <p>Content for the third tab.</p>
-    </div>
-  </div>
-</div>
-```
-
-### JavaScript Functionality
-
-```javascript
-// blocks/tabs/tabs.js
-document.addEventListener('DOMContentLoaded', () => {
-  const tabButtons = document.querySelectorAll('.tab-button');
-  const tabPanels = document.querySelectorAll('.tab-panel');
-
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const targetTab = button.getAttribute('data-tab');
-      
-      // Remove active class from all buttons and panels
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      tabPanels.forEach(panel => panel.classList.remove('active'));
-      
-      // Add active class to clicked button and target panel
-      button.classList.add('active');
-      document.getElementById(targetTab).classList.add('active');
-    });
   });
-});
+}
 ```
 
-## Footer Component
+#### **Decorations**
 
-The Footer component provides site footer with navigation and branding.
+Decorations provide hooks for customizing block behavior at different stages of the decoration process.
 
-### Usage
+##### **beforeDecorate Hook**
+Used for preprocessing the block's DOM before the decorate method is executed.
 
-```html
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-brand">
-      <img src="adobe-franklin-logo.svg" alt="Adobe Franklin Logo" class="footer-logo">
-      <p class="footer-description">Site description and tagline.</p>
-    </div>
-    <div class="footer-nav">
-      <h4>Quick Links</h4>
-      <ul class="footer-links">
-        <li><a href="/privacy">Privacy Policy</a></li>
-        <li><a href="/terms">Terms of Service</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2024 Your Company. All rights reserved.</p>
-  </div>
-</footer>
-```
+**When to use:**
+- Adding brand-specific classes to the DOM
+- Preprocessing content structure
+- Setting up brand-specific data attributes
+- Applying conditional logic before decoration
 
-## Fragment Component
-
-The Fragment component allows for dynamic content insertion.
-
-### Usage
-
-```html
-<div class="fragment">
-  <div class="fragment-content">
-    <!-- Dynamic content will be inserted here -->
-  </div>
-</div>
-```
-
-### Configuration
-
+**Example:**
 ```javascript
-// blocks/fragment/block-config.js
-export default {
-  name: 'fragment',
-  label: 'Content Fragment',
-  fields: [
-    {
-      name: 'fragmentPath',
-      type: 'text',
-      label: 'Fragment Path',
-      description: 'Path to the content fragment'
+import { beforeDecorate } from './cards.js';
+
+export default async function getBlockConfigs() {
+  return {
+    decorations: {
+      beforeDecorate: async (ctx, blockConfig) => {
+        // Add brand-specific class
+        ctx.classList.add('brand-premium');
+        
+        // Set up data attributes
+        ctx.setAttribute('data-brand', 'premium');
+        
+        // Preprocess content
+        const images = ctx.querySelectorAll('img');
+        images.forEach(img => {
+          img.setAttribute('loading', 'lazy');
+        });
+      },
     },
-    {
-      name: 'variation',
-      type: 'text',
-      label: 'Fragment Variation',
-      description: 'Specific variation of the fragment to display'
-    }
-  ]
-};
-```
-
-## Brand-Specific Customization
-
-Each component can be customized for specific brands:
-
-### Theme-Specific Styles
-
-```css
-/* blocks/cards/brand-name/cards.css */
-.cards {
-  --card-bg: var(--brand-primary);
-  --card-text: var(--brand-text);
-  --card-border: var(--brand-border);
-}
-
-.card {
-  background: var(--card-bg);
-  color: var(--card-text);
-  border: 1px solid var(--card-border);
+  };
 }
 ```
 
-### Component Configuration
+##### **decorate Hook**
+Overrides the decorate method in the block's base code.
+
+**When to use:**
+- Complete replacement of base decoration logic
+- Brand-specific DOM transformation
+- Custom functionality that differs significantly from base
+
+**Example:**
+```javascript
+import { decorateBlock } from './cards.js';
+
+export default async function getBlockConfigs() {
+  return {
+    decorations: {
+      decorate: async (ctx, blockConfig) => {
+        // Custom decoration logic for this brand
+        const cards = ctx.querySelectorAll('.card');
+        cards.forEach(card => {
+          // Add brand-specific elements
+          const badge = document.createElement('div');
+          badge.className = 'brand-badge';
+          badge.textContent = 'Premium';
+          card.appendChild(badge);
+        });
+        
+        // Call base decoration if needed
+        await decorateBlock(ctx, blockConfig);
+      },
+    },
+  };
+}
+```
+
+##### **afterDecorate Hook**
+Executed after the decorate method is executed, used for applying custom logic or listeners at the brand level.
+
+**When to use:**
+- Adding event listeners
+- Initializing third-party libraries
+- Setting up brand-specific interactions
+- Post-decoration cleanup or enhancement
+
+**Example:**
+```javascript
+import { afterDecorate } from './cards.js';
+
+export default async function getBlockConfigs() {
+  return {
+    decorations: {
+      afterDecorate: async (ctx, blockConfig) => {
+        // Add brand-specific event listeners
+        const cards = ctx.querySelectorAll('.card');
+        cards.forEach(card => {
+          card.addEventListener('click', (e) => {
+            // Brand-specific click handling
+            analytics.track('card_click', { brand: 'premium' });
+          });
+        });
+        
+        // Initialize brand-specific features
+        if (blockConfing.flags?.enableHover) {
+          initializeHoverEffects(ctx);
+        }
+      },
+    },
+  };
+}
+```
+
+### **Complete Configuration Example**
 
 ```javascript
-// blocks/cards/brand-name/block-config.js
-export default {
-  name: 'cards',
-  label: 'Cards',
-  // Brand-specific configuration overrides
-  fields: [
-    // ... existing fields with brand-specific defaults
-  ]
-};
+import { beforeDecorate, decorateBlock, afterDecorate } from './cards.js';
+
+export default async function getBlockConfigs() {
+  return {
+    flags: {
+      enableAnimation: true,
+      showBadge: true,
+      compactLayout: false,
+    },
+    decorations: {
+      beforeDecorate: async (ctx, blockConfig) => {
+        // Preprocessing
+        ctx.classList.add('brand-premium');
+        ctx.setAttribute('data-brand', 'premium');
+      },
+      decorate: async (ctx, blockConfig) => {
+        // Custom decoration
+        await decorateBlock(ctx, blockConfig);
+        
+        // Add brand-specific elements
+        if (blockConfig.flags?.showBadge) {
+          addBrandBadges(ctx);
+        }
+      },
+      afterDecorate: async (ctx, blockConfig) => {
+        // Post-decoration setup
+        if (blockConfig.flags?.enableAnimation) {
+          initializeAnimations(ctx);
+        }
+        
+        // Event listeners
+        setupEventListeners(ctx);
+      },
+    },
+    variations: [
+      { variation: 'hero-banner', module: 'hero-banner.js' },
+      { variation: 'compact-cards', module: 'compact-cards.js' },
+    ],
+  };
+}
 ```
 
 ## Best Practices
@@ -511,7 +475,7 @@ Use the built-in visual testing framework:
 npm run test:visual
 ```
 
-### Accessibility Testing
+<!-- ### Accessibility Testing
 
 Ensure components meet accessibility standards:
 
@@ -525,7 +489,7 @@ Test components across different browsers and devices:
 
 ```bash
 npm run test:browser
-```
+``` -->
 
 ## Getting Help
 

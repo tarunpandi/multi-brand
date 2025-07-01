@@ -11,16 +11,6 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Multi-Brand Support',
-    image: require('@site/static/img/multi-brand.jpg').default,
-    description: (
-      <>
-        Build and manage multiple brand experiences from a single codebase with
-        shared components and brand-specific theming.
-      </>
-    ),
-  },
-  {
     title: 'Theme Management',
     image: require('@site/static/img/multi-theme.jpg').default,
     description: (
@@ -31,12 +21,21 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: 'Component Library',
+    title: 'Multi-Brand Support',
     image: require('@site/static/img/multi-brand.jpg').default,
     description: (
       <>
-        Reusable UI components designed for EDS Multi-Brand projects. Extend and
-        customize components while maintaining consistency across brands.
+        Build and manage multiple brand experiences from a single codebase with
+        shared components and brand-specific code, overrides and configurations.
+      </>
+    ),
+  },
+  {
+    title: 'Modern development workflow',
+    image: require('@site/static/img/multi-brand.jpg').default,
+    description: (
+      <>
+        Hot reloading, linting, and build tools to get started quickly.
       </>
     ),
   },

@@ -15,7 +15,7 @@ This documentation covers:
 
 - **Getting Started**: Quick setup and installation guides
 - **Theme Management**: How to create and manage brand themes
-- **Blocks & Components**: Reusable UI components for your projects
+- **Blocks**: Reusable UI components for your projects
 - **Deployment**: How to deploy your multi-brand applications
 
 ## Project Structure
