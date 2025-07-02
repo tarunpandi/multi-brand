@@ -1,3 +1,7 @@
-export default function decorate(block) {
-  // render block
+/* export async function decorateBlock(block) {
+
 }
+
+export default async function decorate(block) {
+  renderBlock(block);
+} */

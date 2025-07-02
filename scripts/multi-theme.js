@@ -1,13 +1,19 @@
-import { sampleRUM, loadCSS, getMetadata } from './aem.js';
+import {
+  sampleRUM, loadCSS, getMetadata, buildBlock, decorateBlock,
+} from './aem.js';
 
 export function getBrandCode() {
-  return getMetadata('brand') || 'dark';
+  return getMetadata('brand') || '';
 }
 
 const brandCode = getBrandCode();
 
 export function getBrandPath() {
-  return `${(brandCode !== '') ? `${brandCode}/` : ''}`;
+  if (brandCode) {
+    document.body.classList.add(brandCode);
+    return `${brandCode}/`;
+  }
+  return '';
 }
 
 const brandPath = getBrandPath();
@@ -207,8 +213,34 @@ export async function renderBlock(ctx) {
   }
 }
 
+/**
+ * Loads a block named 'header' into header
+ * @param {Element} header header element
+ * @returns {Promise}
+ */
+async function loadHeader(header) {
+  const headerBlock = buildBlock('header', '');
+  header.append(headerBlock);
+  decorateBlock(headerBlock);
+  return loadBlock(headerBlock);
+}
+
+/**
+   * Loads a block named 'footer' into footer
+   * @param footer footer element
+   * @returns {Promise}
+   */
+async function loadFooter(footer) {
+  const footerBlock = buildBlock('footer', '');
+  footer.append(footerBlock);
+  decorateBlock(footerBlock);
+  return loadBlock(footerBlock);
+}
+
 export {
   loadSections,
   loadSection,
   loadBlock,
+  loadHeader,
+  loadFooter,
 };

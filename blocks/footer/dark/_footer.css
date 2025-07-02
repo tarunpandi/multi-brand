@@ -8,3 +8,8 @@ Example:
   color: var(--color-token);
 }
 */
+
+.dark .footer {
+  background-color: #333;
+  color: #fff; 
+}

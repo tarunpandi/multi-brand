@@ -2,3 +2,16 @@
 @import '../styles.css';
 
 /* dark specific style goes here */
+.dark {
+  background-color: #333;
+  color: #fff; 
+}
+
+.dark main .section.light, .dark main .section.highlight{
+  background-color: #333;
+}
+
+.dark a.button.secondary, button.secondary {
+  color: #fff;
+  border-color: #fff;
+}

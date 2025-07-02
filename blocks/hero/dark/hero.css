@@ -44,3 +44,8 @@ Example:
   color: var(--color-token);
 }
 */
+
+.dark .hero {
+  background-color: #333;
+  color: #fff; 
+}
