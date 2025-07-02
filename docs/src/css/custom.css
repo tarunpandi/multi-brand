@@ -28,3 +28,10 @@
   --ifm-color-primary-lightest: #ff9999;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Make bold callouts visually smaller and lighter than headings */
+.markdown strong {
+  font-size: 0.95em;
+  color: #666;
+  font-weight: 600;
+}

@@ -101,12 +101,33 @@ eds-multi-brand/
 - **Preview**: https://main--eds-multi-brand--acs-ui.aem.page/
 - **Live**: https://main--eds-multi-brand--acs-ui.aem.live/
 
+## Theme Configuration
+
+To apply a brand theme and its configurations, the brand name must be configured in your metadata. Metadata can be set in two ways:
+
+1. **At the global level:** See [Bulk Metadata documentation](https://www.aem.live/docs/bulk-metadata)
+2. **At the template or document level:** See [Authoring & Metadata documentation](https://www.aem.live/docs/authoring#metadata--seo)
+
+For global configuration, you typically use a `metadata.xlsx` file. Refer to the attached screenshot for a sample global metadata configuration:
+
+| URL  | Brand |
+|------|-------|
+| /**  | dark  |
+
+This configuration ensures that the `dark` brand theme and its settings are applied to all pages matching the URL pattern. Adjust the URL and brand values as needed for your project.
+
+### Theme Switching
+
+During development, you can switch between themes by:
+
+1. **Using the theme selector** (if implemented in your UI)
+2. **Modifying the CSS classes** in your HTML
+3. **Updating the theme configuration** and restarting the server
+
 ## Next Steps
 
+- [Blocks Development](./block-components) - Explore available UI components
 - [Theme Management](./theme-management) - Learn how to create and manage brand themes
-- [Blocks](./blocks-components) - Explore available UI components
-- [Development Workflow](./development-workflow) - Understand the development process
-- [Deployment](./deployment) - Deploy your project to AEM
 
 ## Getting Help
 

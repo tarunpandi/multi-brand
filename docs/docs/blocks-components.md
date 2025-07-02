@@ -1,123 +1,119 @@
----
-sidebar_position: 3
----
+# Block Development
 
-# Blocks Development
+EDS Multi-Brand provides a comprehensive set of reusable UI blocks (blocks) that can be themed and customized for different brands. This guide covers all available blocks and how to use them.
 
-EDS Multi-Brand provides a comprehensive set of reusable UI components (blocks) that can be themed and customized for different brands. This guide covers all available components and how to use them.
+## Using the Block Generator
 
-## Component Structure
+### Creating New Blocks Using the Generator
 
-Each component follows a consistent structure:
+When you run the following command:
+
+```bash
+npm run theme:create
+```
+
+You will be prompted with a menu like this:
 
 ```
-blocks/component-name/
-├── component-name.css    # Main component styles
-├── component-name.js     # Component JavaScript
-├── block-config.js       # Component configuration
-└── brand-name/           # Brand-specific overrides
-    ├── component-name.css
+? What do you want to create? (Use arrow keys)
+❯ Block
+  Theme
+```
+
+- **Select "Block"** using the arrow keys and press Enter.
+- You will then be prompted to **enter the name of the block** you want to create (e.g., `hero`, `cards`, `footer`).
+
+The generator will then create the base block structure for you, including:
+- `blocks/block-name/block-name.css` – Base styles for the block
+- `blocks/block-name/block-name.js` – Base JavaScript for the block
+- `blocks/block-name/block-config.js` – Block configuration file
+- Optionally, brand-specific folders if your setup includes brands:
+  - `blocks/block-name/brand-name/_block-name.css` – Brand-specific CSS override (note the leading underscore)
+  - `blocks/block-name/brand-name/block-config.js` – Brand-specific configuration file
+
+**Note:**
+- Brand-specific CSS files will always start with an underscore (e.g., `_block-name.css`) to indicate they are overrides.
+- This process is for creating blocks, not generic components.
+- The generator ensures your new block follows the project's conventions and is ready for further development and theming.
+
+### Block Generator Examples
+
+**Example: Creating a Hero Component**
+```bash
+npm run theme:create
+# Select: Block
+# Enter: Block Name → hero-banner
+```
+
+This generates:
+```
+blocks/hero-banner/
+├── hero-banner.css
+├── hero-banner.js
+├── block-config.js
+├── brand1/
+│   ├── _hero-banner.css
+│   └── block-config.js
+└── brand2/
+    ├── _hero-banner.css
     └── block-config.js
 ```
-## Base CSS and JS Structure
 
-Each block in the EDS Multi-Brand project follows a consistent structure with three main files:
+### Generated File Content
 
-### **Block File Structure**
+The block generator creates properly structured files with:
 
-```
-blocks/block-name/
-├── block-name.css      # Base styles for the block
-├── block-name.js       # Base functionality and logic
-└── block-config.js     # Block configuration and exports
-```
-
-### **Base CSS File (`block-name.css`)**
-
-The base CSS file contains the core styles that are shared across all brands:
-
+#### Example Base CSS File (`block-name.css`):
 ```css
-/* Example: blocks/cards/cards.css */
-.cards > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  grid-gap: 24px;
+/* Auto-generated with CSS custom properties */
+.block-name {
+  
 }
 
-.cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
-}
-
-.cards .cards-card-body {
-  margin: 16px;
-}
-
-.cards .cards-card-image {
-  line-height: 0;
-}
-
-.cards > ul > li img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+/* Responsive design included */
+@media (min-width: 768px) {
+  .block-name {
+    /* Tablet styles */
+  }
 }
 ```
 
-**Key Characteristics to be considered:**
-- ✅ **CSS Custom Properties**: Uses `var(--property-name)` for themeable values
-- ✅ **Semantic Class Names**: Descriptive class names that reflect the component structure
-- ✅ **Responsive Design**: Built with mobile-first responsive principles
-- ✅ **Accessibility**: Includes proper focus states and keyboard navigation
-- ✅ **Performance**: Optimized for rendering performance
+#### Key Characteristics to be considered for css:
+- **CSS Custom Properties**: Uses `var(--property-name)` for themeable values
+- **Semantic Class Names**: Descriptive class names that reflect the block structure
+- **Responsive Design**: Built with mobile-first responsive principles
+- **Accessibility**: Includes proper focus states and keyboard navigation
+- **Performance**: Optimized for rendering performance
 
-### **Base JavaScript File (`block-name.js`)**
-
-The base JS file handles the block's functionality and DOM manipulation:
-
+#### Example Base JavaScript File (`block-name.js`):
 ```javascript
-/* Example: blocks/cards/cards.js */
-import { createOptimizedPicture } from '../../scripts/aem.js';
-import { renderBlock } from '../../scripts/multi-theme.js';
-
+// Auto-generated with proper structure
 export function decorateBlock(block) {
-  /* change to ul, li */
-  const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
-    const li = document.createElement('li');
-    while (row.firstElementChild) li.append(row.firstElementChild);
-    [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
-    });
-    ul.append(li);
+  // Component decoration logic
+  const elements = block.querySelectorAll('.block-element');
+  elements.forEach(element => {
+    // Apply component functionality
   });
-  ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
-  block.textContent = '';
-  block.append(ul);
 }
 
 export default async function decorate(block) {
-  renderBlock(block);
+  decorateBlock(block);
 }
 ```
 
-**Key Functions:**
+#### Key Functions:
 - **`decorateBlock(block)`**: Main function that transforms the block's DOM structure
 - **`decorate(block)`**: Default export that handles theme rendering
 - **DOM Manipulation**: Converts author content into the desired structure
 - **Image Optimization**: Uses AEM's image optimization utilities
 
-### **Block Configuration (`block-config.js`)**
+#### Example Block Configuration (`block-config.js`):
 
 The configuration for the block's settings and decoration hooks:
 
 ```javascript
 /* Example: blocks/cards/block-config.js */
-import { decorateBlock } from './cards.js';
+import { decorateBlock } from './block-name.js';
 
 // import { beforeDecorate, decorateBlock, afterDecorate } from './cards.js';
 
@@ -138,20 +134,20 @@ export default async function getBlockConfigs() {
 }
 ```
 
-**Configuration Options:**
+#### Configuration Options:
 - **`flags`**: Feature flags for conditional functionality
 - **`decorations`**: Hooks for brand-level customization and overrides
 - **`variations`**: Different visual variations of the block (executed after decorations)
 
-### **Usage Guidelines**
+#### Usage Guidelines
 
-#### **Flags**
-Flags should be used when a feature is needed in more than one brand and needs to be part of the base component, toggled at the brand level.
+##### Flags
+Flags should be used when a feature is needed in more than one brand and needs to be part of the base block, toggled at the brand level.
 
 **When to use:**
 - Feature is shared across multiple brands
 - Feature needs to be enabled/disabled per brand
-- Feature affects the base component behavior
+- Feature affects the base block behavior
 
 **Value type:** Boolean (`true`/`false`)
 
@@ -217,7 +213,7 @@ function decorateCard(card) {
 }
 ```
 
-#### **Variations**
+##### Variations
 Variations should be used for brand-specific visual variations that are kept in separate files.
 
 **Important:** Variations will be executed only after completing the execution of decoration hooks if configured.
@@ -246,7 +242,6 @@ export default async function getBlockConfigs() {
   };
 }
 ```
-
 **File structure:**
 ```
 blocks/cards/
@@ -288,11 +283,11 @@ export default async function decorateVariation(ctx, blockConfig) {
 }
 ```
 
-#### **Decorations**
+##### Decorations
 
 Decorations provide hooks for customizing block behavior at different stages of the decoration process.
 
-##### **beforeDecorate Hook**
+###### beforeDecorate Hook
 Used for preprocessing the block's DOM before the decorate method is executed.
 
 **When to use:**
@@ -326,7 +321,7 @@ export default async function getBlockConfigs() {
 }
 ```
 
-##### **decorate Hook**
+###### decorate Hook
 Overrides the decorate method in the block's base code.
 
 **When to use:**
@@ -360,7 +355,7 @@ export default async function getBlockConfigs() {
 }
 ```
 
-##### **afterDecorate Hook**
+###### afterDecorate Hook
 Executed after the decorate method is executed, used for applying custom logic or listeners at the brand level.
 
 **When to use:**
@@ -396,76 +391,11 @@ export default async function getBlockConfigs() {
 }
 ```
 
-### **Complete Configuration Example**
+## Manual Block Creation
 
-```javascript
-import { beforeDecorate, decorateBlock, afterDecorate } from './cards.js';
+If you prefer to create blocks manually, follow the structure shown in the [Block Generator Examples](#block-generator-examples) section above.
 
-export default async function getBlockConfigs() {
-  return {
-    flags: {
-      enableAnimation: true,
-      showBadge: true,
-      compactLayout: false,
-    },
-    decorations: {
-      beforeDecorate: async (ctx, blockConfig) => {
-        // Preprocessing
-        ctx.classList.add('brand-premium');
-        ctx.setAttribute('data-brand', 'premium');
-      },
-      decorate: async (ctx, blockConfig) => {
-        // Custom decoration
-        await decorateBlock(ctx, blockConfig);
-        
-        // Add brand-specific elements
-        if (blockConfig.flags?.showBadge) {
-          addBrandBadges(ctx);
-        }
-      },
-      afterDecorate: async (ctx, blockConfig) => {
-        // Post-decoration setup
-        if (blockConfig.flags?.enableAnimation) {
-          initializeAnimations(ctx);
-        }
-        
-        // Event listeners
-        setupEventListeners(ctx);
-      },
-    },
-    variations: [
-      { variation: 'hero-banner', module: 'hero-banner.js' },
-      { variation: 'compact-cards', module: 'compact-cards.js' },
-    ],
-  };
-}
-```
-
-## Best Practices
-
-### Component Development
-
-1. **Follow the established structure** for consistency
-2. **Use semantic HTML** for accessibility
-3. **Implement responsive design** from the start
-4. **Write clean, maintainable CSS** with proper organization
-5. **Add comprehensive JavaScript** with error handling
-
-### Theming
-
-1. **Use CSS custom properties** for theme variables
-2. **Keep brand-specific styles separate** from shared styles
-3. **Test components across all themes** during development
-4. **Document theme requirements** for each component
-
-### Performance
-
-1. **Optimize images** and assets for each component
-2. **Use lazy loading** for non-critical components
-3. **Minimize JavaScript** and CSS bundle sizes
-4. **Implement proper caching** strategies
-
-## Component Testing
+## Block Testing
 
 ### Visual Testing
 
@@ -477,7 +407,7 @@ npm run test:visual
 
 <!-- ### Accessibility Testing
 
-Ensure components meet accessibility standards:
+Ensure blocks meet accessibility standards:
 
 ```bash
 npm run test:a11y
@@ -485,7 +415,7 @@ npm run test:a11y
 
 ### Browser Testing
 
-Test components across different browsers and devices:
+Test blocks across different browsers and devices:
 
 ```bash
 npm run test:browser
@@ -493,6 +423,6 @@ npm run test:browser
 
 ## Getting Help
 
-- Review the component documentation in this guide
+- Review the block documentation in this guide
 - Check the [theme management guide](./theme-management) for theming information
-- Report component issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 
+- Report block issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 

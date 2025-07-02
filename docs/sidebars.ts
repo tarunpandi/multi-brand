@@ -20,19 +20,20 @@ const sidebars: SidebarsConfig = {
       label: 'Introduction',
     },
     {
-      type: 'doc',
-      id: 'development-workflow',
-      label: 'Development Workflow',
-    },
-    {
-      type: 'doc',
-      id: 'blocks-components',
-      label: 'Blocks Development',
-    },
-    {
-      type: 'doc',
-      id: 'theme-management',
-      label: 'Theme Management',
+      type: 'category',
+      label: 'Getting Started',
+      items: [
+        {
+          type: 'doc',
+          id: 'blocks-components',
+          label: 'Block Development',
+        },
+        {
+          type: 'doc',
+          id: 'theme-management',
+          label: 'Theme Management',
+        },
+      ],
     },
   ],
 };

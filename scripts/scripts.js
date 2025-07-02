@@ -1,7 +1,5 @@
 import {
   buildBlock,
-  loadHeader,
-  loadFooter,
   decorateButtons,
   decorateIcons,
   decorateSections,
@@ -10,7 +8,7 @@ import {
   waitForFirstImage,
   loadCSS,
 } from './aem.js';
-import { loadSection, loadSections } from './multi-theme.js';
+import { loadSection, loadHeader, loadFooter, loadSections } from './multi-theme.js';
 
 /**
  * Builds hero block and prepends to main in a new section.

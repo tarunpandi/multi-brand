@@ -24,84 +24,64 @@ The easiest way to create a new brand theme is using the built-in generator:
 npm run theme:create
 ```
 
+You will be prompted with a menu like this:
+
+```
+? What do you want to create? (Use arrow keys)
+  Block
+❯ Theme
+```
+
 This interactive tool will:
 1. Ask for your brand name
-2. Collect brand colors and design preferences
-3. Generate theme-specific CSS files
-4. Create block configurations for the new theme
+2. Generate brand specific CSS files under styles
+3. Create block configurations and artifacts for the new brand
+
+**Project Structure with new brand**
+
+```
+eds-multi-brand/
+├── blocks/                    # Reusable UI components
+│   ├── cards/                # Card components
+│   │   ├── cards.css         # Base card styles
+│   │   ├── cards.js          # Base card functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _cards.css    # Brand-specific card styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   ├── columns/              # Layout components
+│   │   ├── columns.css       # Base column styles
+│   │   ├── columns.js        # Base column functionality
+│   │   ├── block-config.js   # Base block configuration
+│   │   ├── brand-name/       # Brand-specific folder
+│   │   │   ├── _columns.css  # Brand-specific column styles
+│   │   │   └── block-config.js # Brand-specific configuration
+│   │   └── ...               # More brands
+│   └── ...                   # More block types
+├── styles/                   # Global styles and themes
+│   ├── styles.css            # Base styles
+│   ├── fonts.css             # Base fonts
+│   ├── tokens.css            # Base design tokens
+│   ├── brand-name/           # Brand-specific styles
+│   │   ├── _styles.css       # Brand-specific overrides
+│   │   ├── _fonts.css        # Brand-specific fonts
+│   │   └── _tokens.css       # Brand-specific design tokens
+│   └── ...                   # More brands
+
+```
+
 
 ### Manual Theme Creation
 
 You can also create themes manually by following these steps:
 
-1. **Create theme directory structure:**
+**Create theme directory structure:**
 ```bash
 mkdir -p styles/brand-name
 mkdir -p blocks/*/brand-name
 ```
-
-2. **Create theme configuration:**
-```json
-// styles/brand-name/theme-config.json
-{
-  "name": "Brand Name",
-  "colors": {
-    "primary": "#007bff",
-    "secondary": "#6c757d",
-    "accent": "#28a745"
-  },
-  "fonts": {
-    "heading": "Roboto, sans-serif",
-    "body": "Open Sans, sans-serif"
-  }
-}
-```
-
-3. **Generate theme CSS:**
-```bash
-npm run theme:build
-```
-
-## Theme Configuration
-
-### Brand Configuration File
-
-Each brand theme has a configuration file that defines:
-
-```json
-{
-  "name": "Brand Name",
-  "description": "Brand description",
-  "colors": {
-    "primary": "#007bff",
-    "secondary": "#6c757d",
-    "accent": "#28a745",
-    "success": "#28a745",
-    "warning": "#ffc107",
-    "danger": "#dc3545",
-    "light": "#f8f9fa",
-    "dark": "#343a40"
-  },
-  "fonts": {
-    "heading": "Roboto, sans-serif",
-    "body": "Open Sans, sans-serif",
-    "monospace": "Courier New, monospace"
-  },
-  "spacing": {
-    "xs": "0.25rem",
-    "sm": "0.5rem",
-    "md": "1rem",
-    "lg": "1.5rem",
-    "xl": "3rem"
-  },
-  "breakpoints": {
-    "sm": "576px",
-    "md": "768px",
-    "lg": "992px",
-    "xl": "1200px"
-  }
-}
-```
+If you prefer to create blocks manually, follow the structure shown in the [Block Generator Examples](#block-generator-examples) section above.
 
 ### Environment Variables
 
@@ -111,6 +91,12 @@ Configure which brands to build using environment variables:
 # .env
 BRANDS=brand1,brand2,brand3
 ```
+
+**Generate theme CSS:**
+```bash
+npm run theme:build
+```
+
 
 ## Theme Development Workflow
 
@@ -133,14 +119,6 @@ aem up
 
 3. **Access your site:**
 Open `http://localhost:3000` to see your site with live theme updates.
-
-### Theme Switching
-
-During development, you can switch between themes by:
-
-1. **Using the theme selector** (if implemented in your UI)
-2. **Modifying the CSS classes** in your HTML
-3. **Updating the theme configuration** and restarting the server
 
 ## Building Themes for Production
 
@@ -195,13 +173,13 @@ blocks/cards/brand-name/
 
 ```css
 /* blocks/cards/brand-name/cards.css */
-.cards {
+.brand-name .cards {
   --card-bg: var(--brand-primary);
   --card-border: var(--brand-secondary);
   --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card {
+.brand-name .cards .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
@@ -219,30 +197,6 @@ npm run theme:remove
 This will:
 - Remove theme directories
 - Clean up configuration files
-- Update build scripts
-
-## Best Practices
-
-### Theme Organization
-
-1. **Use consistent naming** for theme directories
-2. **Keep theme-specific code separate** from shared code
-3. **Document theme requirements** and usage guidelines
-4. **Test themes across different devices** and browsers
-
-### Performance Optimization
-
-1. **Use CSS custom properties** for theme variables
-2. **Minimize theme-specific CSS** by leveraging shared styles
-3. **Optimize font loading** for each theme
-4. **Use lazy loading** for theme-specific resources
-
-### Maintenance
-
-1. **Regularly update theme configurations** as design systems evolve
-2. **Version control theme changes** with clear commit messages
-3. **Test theme compatibility** when updating shared components
-4. **Document breaking changes** in theme updates
 
 ## Troubleshooting
 

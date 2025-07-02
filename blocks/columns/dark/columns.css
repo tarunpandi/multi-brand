@@ -40,3 +40,7 @@ Example:
   color: var(--color-token);
 }
 */
+
+.dark .columns {
+  background-color: #333;
+}
