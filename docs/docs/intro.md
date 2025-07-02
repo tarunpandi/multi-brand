@@ -126,7 +126,7 @@ During development, you can switch between themes by:
 
 ## Next Steps
 
-- [Blocks Development](./block-components) - Explore available UI components
+- [Blocks Development](./blocks-components) - Explore available UI components
 - [Theme Management](./theme-management) - Learn how to create and manage brand themes
 
 ## Getting Help

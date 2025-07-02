@@ -81,7 +81,7 @@ You can also create themes manually by following these steps:
 mkdir -p styles/brand-name
 mkdir -p blocks/*/brand-name
 ```
-If you prefer to create blocks manually, follow the structure shown in the [Block Generator Examples](#block-generator-examples) section above.
+If you prefer to create blocks manually, follow the structure shown in the Block Generator Examples section in the [blocks and components guide](./blocks-components).
 
 ### Environment Variables
 
