@@ -251,12 +251,12 @@ Example:
   background-color: #333;
   color: #fff; 
   border-bottom: 1px solid #444;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
 }
 @media (width >= 900px) {
   .dark header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
     background-color: #333;
     border: 1px solid#fff;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
   }
 }
