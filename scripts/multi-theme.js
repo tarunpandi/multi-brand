@@ -18,6 +18,18 @@ export function getBrandPath() {
 
 const brandPath = getBrandPath();
 
+export function getTheme() {
+  return getMetadata('theme') || '';
+}
+
+const theme = getTheme();
+
+export function getThemePath() {
+  return theme ? `${theme}/` : '';
+}
+
+const themePath = getThemePath();
+
 let pageShowEventRegistered = false;
 
 /**
@@ -30,7 +42,7 @@ async function loadBlock(block) {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
     try {
-      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${brandPath}${blockName}.css`);
+      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${brandPath}${themePath}${blockName}.css`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
