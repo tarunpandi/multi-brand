@@ -36,6 +36,20 @@ The generator will then create the base block structure for you, including:
 - This process is for creating blocks, not generic components.
 - The generator ensures your new block follows the project's conventions and is ready for further development and theming.
 
+### Verbose Logging
+
+For detailed logging during block creation, use:
+
+```bash
+npm run theme:create:log
+```
+
+This will show:
+- Directory creation steps
+- File generation details
+- Configuration updates
+- Summary of created files
+
 ### Block Generator Examples
 
 **Example: Creating a Hero Component**
@@ -48,15 +62,38 @@ npm run theme:create
 This generates:
 ```
 blocks/hero-banner/
-├── hero-banner.css
-├── hero-banner.js
-├── block-config.js
-├── brand1/
-│   ├── _hero-banner.css
-│   └── block-config.js
-└── brand2/
-    ├── _hero-banner.css
-    └── block-config.js
+├── hero-banner.css          # Base styles
+├── hero-banner.js           # Base functionality
+├── block-config.js          # Base configuration
+├── themes/                  # Root-level themes
+│   ├── light/              # Light theme
+│   │   ├── _hero-banner.css # Theme-specific overrides
+│   │   └── hero-banner.css  # Generated combined CSS
+│   └── dark/               # Dark theme
+│       ├── _hero-banner.css # Theme-specific overrides
+│       └── hero-banner.css  # Generated combined CSS
+├── brand1/                  # Brand-specific folder
+│   ├── _hero-banner.css     # Brand-specific overrides
+│   ├── hero-banner.css      # Generated brand-only CSS
+│   ├── block-config.js      # Brand-specific configuration
+│   └── themes/              # Brand-specific themes
+│       ├── light/           # Brand + Light theme
+│       │   ├── _hero-banner.css # Brand+theme overrides
+│       │   └── hero-banner.css  # Generated combined CSS
+│       └── dark/            # Brand + Dark theme
+│           ├── _hero-banner.css # Brand+theme overrides
+│           └── hero-banner.css  # Generated combined CSS
+└── brand2/                  # Another brand
+    ├── _hero-banner.css     # Brand-specific overrides
+    ├── hero-banner.css      # Generated brand-only CSS
+    ├── block-config.js      # Brand-specific configuration
+    └── themes/              # Brand-specific themes
+        ├── light/           # Brand + Light theme
+        │   ├── _hero-banner.css # Brand+theme overrides
+        │   └── hero-banner.css  # Generated combined CSS
+        └── dark/            # Brand + Dark theme
+            ├── _hero-banner.css # Brand+theme overrides
+            └── hero-banner.css  # Generated combined CSS
 ```
 
 ### Generated File Content
