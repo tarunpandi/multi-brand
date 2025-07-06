@@ -3,10 +3,14 @@
     const brandCode = [...document.head.querySelectorAll(`meta[name="brand"]`)]
       .map((m) => m.content)
       .join(', ');
+    const themeCode = [...document.head.querySelectorAll(`meta[name="theme"]`)]
+      .map((m) => m.content)
+      .join(', ');
     const brandPath = `${(brandCode !== '') ? `${brandCode}/` : ''}`;
+    const themePath = `${(themeCode !== '') ? `themes/${themeCode}/` : ''}`;
     const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = `/styles/${brandPath}styles.css`;
+      link.href = `/styles/${brandPath}${themePath}styles.css`;
       link.type = "text/css";
       document.head.appendChild(link);
 </script>

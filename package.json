@@ -13,10 +13,14 @@
     "docs:start": "cd docs && npm start",
     "docs:build": "cd docs && npm run build",
     "docs:deploy": "cd docs && npm run deploy",
-    "theme:create": "plop --plopfile theme-tools/plopfile.mjs",
-    "theme:start": "npx gulp createBrandCSS && npx gulp default",
-    "theme:build": "npx gulp createBrandCSS",
-    "theme:remove": "node theme-tools/remove-brand.js"
+    "theme:create": "plop component --plopfile theme-tools/plopfile.mjs",
+    "theme:create:log": "plop component --plopfile theme-tools/plopfile.mjs --verbose",
+    "theme:start": "NODE_OPTIONS='--max-old-space-size=4096' npx gulp createBrandCSS && npx gulp default",
+    "theme:build": "NODE_OPTIONS='--max-old-space-size=4096' npx gulp createBrandCSS",
+    "theme:build:log": "NODE_OPTIONS='--max-old-space-size=4096' node theme-tools/generate-css.js --verbose",
+    "theme:remove": "plop remove --plopfile theme-tools/plopfile.mjs",
+    "theme:remove:log": "plop remove --plopfile theme-tools/plopfile.mjs --verbose",
+    "clean": "rm -f isolate-*.log"
   },
   "repository": {
     "type": "git",

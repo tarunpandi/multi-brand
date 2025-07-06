@@ -54,46 +54,81 @@ eds-multi-brand/
 │   │   ├── cards.css         # Base card styles
 │   │   ├── cards.js          # Base card functionality
 │   │   ├── block-config.js   # Base block configuration
+│   │   ├── themes/           # Root-level themes
+│   │   │   ├── light/        # Light theme
+│   │   │   │   ├── _cards.css # Theme-specific overrides
+│   │   │   │   └── cards.css  # Generated combined CSS
+│   │   │   └── dark/         # Dark theme
+│   │   │       ├── _cards.css # Theme-specific overrides
+│   │   │       └── cards.css  # Generated combined CSS
 │   │   ├── brand-name/       # Brand-specific folder
 │   │   │   ├── _cards.css    # Brand-specific card styles
-│   │   │   └── block-config.js # Brand-specific configuration
+│   │   │   ├── cards.css     # Generated brand-only CSS
+│   │   │   ├── block-config.js # Brand-specific configuration
+│   │   │   └── themes/       # Brand-specific themes
+│   │   │       ├── light/    # Brand + Light theme
+│   │   │       │   ├── _cards.css # Brand+theme overrides
+│   │   │       │   └── cards.css  # Generated combined CSS
+│   │   │       └── dark/     # Brand + Dark theme
+│   │   │           ├── _cards.css # Brand+theme overrides
+│   │   │           └── cards.css  # Generated combined CSS
 │   │   └── ...               # More brands
 │   ├── columns/              # Layout components
 │   │   ├── columns.css       # Base column styles
 │   │   ├── columns.js        # Base column functionality
 │   │   ├── block-config.js   # Base block configuration
-│   │   ├── brand-name/       # Brand-specific folder
-│   │   │   ├── _columns.css  # Brand-specific column styles
-│   │   │   └── block-config.js # Brand-specific configuration
-│   │   └── ...               # More brands
-│   ├── footer/               # Footer component
-│   │   ├── footer.css        # Base footer styles
-│   │   ├── footer.js         # Base footer functionality
-│   │   ├── block-config.js   # Base block configuration
-│   │   ├── brand-name/       # Brand-specific folder
-│   │   │   ├── _footer.css   # Brand-specific footer styles
-│   │   │   └── block-config.js # Brand-specific configuration
-│   │   └── ...               # More brands
-│   ├── header/               # Header component
-│   │   ├── header.css        # Base header styles
-│   │   ├── header.js         # Base header functionality
-│   │   ├── block-config.js   # Base block configuration
-│   │   ├── brand-name/       # Brand-specific folder
-│   │   │   ├── _header.css   # Brand-specific header styles
-│   │   │   └── block-config.js # Brand-specific configuration
-│   │   └── ...               # More brands
+│   │   ├── themes/           # Root-level themes
+│   │   │   ├── light/        # Light theme
+│   │   │   │   ├── _columns.css # Theme-specific overrides
+│   │   │   │   └── columns.css  # Generated combined CSS
+│   │   │   └── dark/         # Dark theme
+│   │   │       ├── _columns.css # Theme-specific overrides
+│   │   │       └── columns.css  # Generated combined CSS
+│   │   └── brand-name/       # Brand-specific folder
+│   │       ├── _columns.css  # Brand-specific column styles
+│   │       ├── columns.css   # Generated brand-only CSS
+│   │       ├── block-config.js # Brand-specific configuration
+│   │       └── themes/       # Brand-specific themes
+│   │           ├── light/    # Brand + Light theme
+│   │           │   ├── _columns.css # Brand+theme overrides
+│   │           │   └── columns.css  # Generated combined CSS
+│   │           └── dark/     # Brand + Dark theme
+│   │               ├── _columns.css # Brand+theme overrides
+│   │               └── columns.css  # Generated combined CSS
 │   └── ...                   # More block types
 ├── styles/                   # Global styles and themes
 │   ├── styles.css            # Base styles
 │   ├── fonts.css             # Base fonts
-│   ├── tokens.css            # Base design tokens
+│   ├── themes/               # Root-level themes
+│   │   ├── light/            # Light theme
+│   │   │   ├── _styles.css   # Theme-specific overrides
+│   │   │   ├── _fonts.css    # Theme-specific fonts
+│   │   │   ├── styles.css    # Generated combined CSS
+│   │   │   └── fonts.css     # Generated combined CSS
+│   │   └── dark/             # Dark theme
+│   │       ├── _styles.css   # Theme-specific overrides
+│   │       ├── _fonts.css    # Theme-specific fonts
+│   │       ├── styles.css    # Generated combined CSS
+│   │       └── fonts.css     # Generated combined CSS
 │   ├── brand-name/           # Brand-specific styles
 │   │   ├── _styles.css       # Brand-specific overrides
 │   │   ├── _fonts.css        # Brand-specific fonts
-│   │   └── _tokens.css       # Brand-specific design tokens
+│   │   ├── styles.css        # Generated brand-only CSS
+│   │   ├── fonts.css         # Generated brand-only CSS
+│   │   └── themes/           # Brand-specific themes
+│   │       ├── light/        # Brand + Light theme
+│   │       │   ├── _styles.css # Brand+theme overrides
+│   │       │   ├── _fonts.css  # Brand+theme fonts
+│   │       │   ├── styles.css  # Generated combined CSS
+│   │       │   └── fonts.css   # Generated combined CSS
+│   │       └── dark/         # Brand + Dark theme
+│   │           ├── _styles.css # Brand+theme overrides
+│   │           ├── _fonts.css  # Brand+theme fonts
+│   │           ├── styles.css  # Generated combined CSS
+│   │           └── fonts.css   # Generated combined CSS
 │   └── ...                   # More brands
-├── theme-tools/              # Theme management utilities
 ├── scripts/                  # Scripts
+├── brand-config.json         # Auto-generated brand and theme configuration
 └── docs/                     # This documentation
 ```
 ## Environments
@@ -108,13 +143,23 @@ To apply a brand theme and its configurations, the brand name must be configured
 1. **At the global level:** See [Bulk Metadata documentation](https://www.aem.live/docs/bulk-metadata)
 2. **At the template or document level:** See [Authoring & Metadata documentation](https://www.aem.live/docs/authoring#metadata--seo)
 
-For global configuration, you typically use a `metadata.xlsx` file. Refer to the attached screenshot for a sample global metadata configuration:
+For global configuration, you typically use a `metadata.xlsx` file. Here are sample configurations:
 
+### Brand-Only Configuration
 | URL  | Brand |
 |------|-------|
 | /**  | dark  |
 
-This configuration ensures that the `dark` brand theme and its settings are applied to all pages matching the URL pattern. Adjust the URL and brand values as needed for your project.
+This configuration ensures that the `dark` brand theme and its settings are applied to all pages matching the URL pattern.
+
+### Brand + Theme Configuration
+| URL  | Brand | Theme |
+|------|-------|-------|
+| /**  | brand-name | dark |
+
+This configuration applies both the `brand-name` brand and the `dark` theme to all pages. The system will use the combined CSS file: `brand-name/themes/dark/`.
+
+Adjust the URL, brand, and theme values as needed for your project.
 
 ### Theme Switching
 
