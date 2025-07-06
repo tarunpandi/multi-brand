@@ -245,7 +245,7 @@ export default function (plop) {
         type: 'list',
         name: 'type',
         message: 'What do you want to remove?',
-        choices: ['Brand', 'Theme', 'Block'],
+        choices: ['Block', 'Theme', 'Brand'],
       },
       {
         type: 'input',

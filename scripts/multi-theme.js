@@ -25,7 +25,7 @@ export function getTheme() {
 const theme = getTheme();
 
 export function getThemePath() {
-  return theme ? `${theme}/` : '';
+  return theme ? `themes/${theme}/` : '';
 }
 
 const themePath = getThemePath();

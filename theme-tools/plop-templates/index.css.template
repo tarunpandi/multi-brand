@@ -1,4 +1,4 @@
-@import '../{{name}}.css';
+@import '{{#if isBrandTheme}}../../{{else if isBrandCSS}}../{{else}}../../{{/if}}{{blockName}}.css';
 
 /* Brand-specific overrides for {{name}} block */
 

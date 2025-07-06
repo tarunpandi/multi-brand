@@ -7,7 +7,7 @@
       .map((m) => m.content)
       .join(', ');
     const brandPath = `${(brandCode !== '') ? `${brandCode}/` : ''}`;
-    const themePath = `${(themeCode !== '') ? `${themeCode}/` : ''}`;
+    const themePath = `${(themeCode !== '') ? `themes/${themeCode}/` : ''}`;
     const link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = `/styles/${brandPath}${themePath}styles.css`;

@@ -1,4 +1,8 @@
 {
-  "brands": [],
-  "themes": []
+  "brands": [
+    "roy"
+  ],
+  "themes": [
+    "bright"
+  ]
 }

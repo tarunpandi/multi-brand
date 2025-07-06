@@ -93,6 +93,21 @@ async function loadTemplate(templatePath, fallbackContent) {
   }
 }
 
+// =========================
+// THEME & BRAND CSS GENERATION LOGIC
+// =========================
+//
+// - When creating a new theme at the root (styles/themes/<theme>/),
+//   the import should be: @import '../../styles.css'
+// - When creating a new theme inside a brand (styles/<brand>/themes/<theme>/),
+//   the import should be: @import '../../../styles.css'
+//
+// - The script will SKIP existing files to avoid overwriting user changes.
+//   (If you want to force regeneration, add a force flag in the future.)
+//
+// - The correct import path is determined by the generateSpecialStyleContent function
+//   using the isTheme and isBrand flags.
+
 // Theme CSS generation functions
 async function generateThemeCSSForFolder(themeCode, codeDir, fileName, isStyleFolder = false) {
   try {
@@ -123,7 +138,6 @@ async function generateThemeCSSForFolder(themeCode, codeDir, fileName, isStyleFo
 
     log(`Processing ${cssFiles.length} CSS files for theme ${themeCode}...`);
 
-    // Process each CSS file
     for (const file of cssFiles) {
       const relativePath = fileName
         ? path.relative(codeDir, path.join(codeDir, fileName, file))
@@ -131,7 +145,7 @@ async function generateThemeCSSForFolder(themeCode, codeDir, fileName, isStyleFo
       
       const dest = path.join(themeDir, `_${file}`);
       
-      // Check if file already exists
+      // SKIP existing files to avoid overwriting user changes
       if (await fileExists(dest)) {
         log(`File ${relativePath} exists  ....\t\t\t[SKIPPED]`);
         continue;
@@ -139,15 +153,14 @@ async function generateThemeCSSForFolder(themeCode, codeDir, fileName, isStyleFo
 
       let content = '';
       
-      // Handle special style files
+      // For theme files, generate correct import path
       if (isStyleFolder && ['styles.css', 'fonts.css', 'tokens.css'].includes(file)) {
-        content = await generateSpecialStyleContent(file, themeCode, codeDir);
+        content = await generateSpecialStyleContent(file, themeCode, codeDir, true);
       } else {
         // Use template for regular CSS files
         content = await generateTemplateContent(file, fileName, codeDir, themeCode, true);
       }
 
-      // Write the file
       try {
         await fs.writeFile(dest, content);
         log(`File ${relativePath} created  ....\t\t\t[OK]`);
@@ -170,45 +183,52 @@ async function generateThemeCSSWithinBrandFolder(themeCode, brandDir, fileName, 
     const themeDir = path.join(themesDir, themeCode);
     await ensureDirectoryExists(themeDir);
 
-    // Look for CSS files in the original block directory
-    const originalBlockDir = path.dirname(brandDir);
-    const files = await fs.readdir(originalBlockDir);
+    // Determine what CSS files to generate based on the brand directory type
+    let cssFilesToGenerate = [];
     
-    const cssFiles = files.filter(file => 
-      file.endsWith('.css') && 
-      !file.startsWith('_') && 
-      file !== '.css'
-    );
+    if (isStyleFolder) {
+      // For styles directory, generate theme-specific files
+      cssFilesToGenerate = ['styles.css', 'fonts.css', 'lazy-styles.css'];
+    } else {
+      // For blocks directory, determine the block name and generate block-specific file
+      const pathParts = brandDir.split(path.sep);
+      const blocksIndex = pathParts.indexOf('blocks');
+      if (blocksIndex !== -1 && blocksIndex + 1 < pathParts.length) {
+        const blockName = pathParts[blocksIndex + 1];
+        cssFilesToGenerate = [`${blockName}.css`];
+      }
+    }
 
-    if (cssFiles.length === 0) {
-      log(`No CSS files found in ${originalBlockDir}`, 'warning');
+    if (cssFilesToGenerate.length === 0) {
+      log(`No CSS files to generate for ${brandDir}`, 'warning');
       return;
     }
 
-    log(`Processing ${cssFiles.length} CSS files for theme ${themeCode} within brand folder...`);
+    log(`Generating ${cssFilesToGenerate.length} CSS files for theme ${themeCode} within brand folder...`);
 
-    for (const file of cssFiles) {
-      const relativePath = path.relative(originalBlockDir, path.join(originalBlockDir, file));
+    for (const file of cssFilesToGenerate) {
       const dest = path.join(themeDir, `_${file}`);
       
+      // SKIP existing files to avoid overwriting user changes
       if (await fileExists(dest)) {
-        log(`File ${relativePath} exists  ....\t\t\t[SKIPPED]`);
+        log(`File _${file} exists  ....\t\t\t[SKIPPED]`);
         continue;
       }
 
       let content = '';
       
-      if (isStyleFolder && ['styles.css', 'fonts.css', 'tokens.css'].includes(file)) {
-        content = await generateSpecialStyleContent(file, themeCode, originalBlockDir, true);
+      // For theme files, generate correct import path
+      if (isStyleFolder && ['styles.css', 'fonts.css', 'lazy-styles.css', 'tokens.css'].includes(file)) {
+        content = await generateSpecialStyleContent(file, themeCode, brandDir, true, true);
       } else {
-        content = await generateTemplateContent(file, null, originalBlockDir, themeCode, true, true);
+        content = await generateTemplateContent(file, null, brandDir, themeCode, true, true);
       }
 
       try {
         await fs.writeFile(dest, content);
-        log(`File ${relativePath} created  ....\t\t\t[OK]`);
+        log(`File _${file} created  ....\t\t\t[OK]`);
       } catch (error) {
-        log(`File ${relativePath} created  ....\t\t\t[ERROR] - ${error.message}`, 'error');
+        log(`File _${file} created  ....\t\t\t[ERROR] - ${error.message}`, 'error');
       }
     }
   } catch (error) {
@@ -258,10 +278,10 @@ async function generateBrandCSSForFolder(brandCode, codeDir, fileName, isStyleFo
 
       let content = '';
 
-      if (isStyleFolder && ['styles.css', 'fonts.css', 'tokens.css'].includes(file)) {
+      if (isStyleFolder && ['styles.css', 'fonts.css', 'lazy-styles.css', 'tokens.css'].includes(file)) {
         content = await generateSpecialStyleContent(file, brandCode, codeDir, false, true);
       } else {
-        content = await generateTemplateContent(file, fileName, codeDir, brandCode, false);
+        content = await generateTemplateContent(file, fileName, codeDir, brandCode, false, true);
       }
 
       try {
@@ -285,13 +305,19 @@ async function generateBrandCSSForFolder(brandCode, codeDir, fileName, isStyleFo
 
 // Helper functions for content generation
 async function generateSpecialStyleContent(file, code, codeDir, isTheme = false, isBrand = false) {
-  const importLevels = isTheme ? (isBrand ? '../../../' : '../../') : '../';
+  // Determine the correct import path for styles.css:
+  // - For root themes: '../../styles.css'
+  // - For brand themes: '../../styles.css' (same as root for styles folder)
+  // - For brand CSS files: '../styles.css'
+  const importLevels = isTheme ? '../../' : '../';
   
   switch (file) {
     case 'styles.css':
       return `\n@import '${importLevels}styles.css';\n\n/* ${code} specific style goes here */`;
     case 'fonts.css':
       return `/* ${code} specific fonts go here */`;
+    case 'lazy-styles.css':
+      return `\n@import '${importLevels}lazy-styles.css';\n\n/* ${code} specific lazy styles go here */`;
     case 'tokens.css':
       try {
         return await fs.readFile(path.join(codeDir, file), 'utf8');
@@ -305,32 +331,51 @@ async function generateSpecialStyleContent(file, code, codeDir, isTheme = false,
 }
 
 async function generateTemplateContent(file, fileName, codeDir, code, isTheme = false, isWithinBrand = false) {
-        const templatePath = path.join(__dirname, 'plop-templates', 'index.css.template');
+  const templatePath = path.join(__dirname, 'plop-templates', 'index.css.template');
   const fallbackContent = `/* ${code} specific code goes here */\n`;
-  
-        try {
+  try {
     let template = await loadTemplate(templatePath, fallbackContent);
-    
-          // Determine block/theme name
-          let blockOrThemeName = fileName || path.basename(codeDir);
-          if (blockOrThemeName.endsWith('.css')) {
-            blockOrThemeName = blockOrThemeName.replace(/\.css$/, '');
-          }
-    
-    // Replace template variables
-          content = template.replace(/\{\{name\}\}/g, blockOrThemeName);
-    
-    // Adjust import paths based on context
-    if (isTheme) {
-      const importLevels = isWithinBrand ? '../../../' : '../../';
-      content = content.replace(/@import '\.\.\//, `@import '${importLevels}`);
+
+    // Determine block/theme name
+    let blockOrThemeName = fileName || path.basename(codeDir);
+    if (blockOrThemeName.endsWith('.css')) {
+      blockOrThemeName = blockOrThemeName.replace(/\.css$/, '');
     }
-    
+
+    // Always extract blockName from the path for both root and brand themes
+    let blockName = blockOrThemeName;
+    if (codeDir.includes('blocks')) {
+      const pathParts = codeDir.split(path.sep);
+      const blocksIndex = pathParts.indexOf('blocks');
+      if (blocksIndex !== -1 && blocksIndex + 1 < pathParts.length) {
+        blockName = pathParts[blocksIndex + 1];
+      }
+    }
+
+    // Replace template variables
+    let content = template.replace(/\{\{name\}\}/g, blockOrThemeName)
+      .replace(/\{\{blockName\}\}/g, blockName);
+
+    // Handle the three different import path scenarios:
+    // 1. Root theme files: ../../{{blockName}}.css
+    // 2. Brand CSS files: ../{{blockName}}.css  
+    // 3. Brand theme files: ../../../{{blockName}}.css
+    if (isWithinBrand && isTheme) {
+      // Brand theme files (e.g., blocks/cards/roy/themes/bright/_cards.css)
+      content = content.replace(/\{\{#if isBrandTheme\}\}(.*?)\{\{else if isBrandCSS\}\}(.*?)\{\{else\}\}(.*?)\{\{\/if\}\}/gs, '$1');
+    } else if (isWithinBrand && !isTheme) {
+      // Brand CSS files (e.g., blocks/cards/roy/_cards.css)
+      content = content.replace(/\{\{#if isBrandTheme\}\}(.*?)\{\{else if isBrandCSS\}\}(.*?)\{\{else\}\}(.*?)\{\{\/if\}\}/gs, '$2');
+    } else {
+      // Root theme files (e.g., blocks/cards/themes/bright/_cards.css)
+      content = content.replace(/\{\{#if isBrandTheme\}\}(.*?)\{\{else if isBrandCSS\}\}(.*?)\{\{else\}\}(.*?)\{\{\/if\}\}/gs, '$3');
+    }
+
     return content;
   } catch (error) {
     log(`Error generating template content: ${error.message}`, 'warning');
     return fallbackContent;
-          }
+  }
 }
 
 // Subfolder processing functions
@@ -612,10 +657,41 @@ async function generateThemeCSS(themeCode) {
       log(`Styles directory ${stylesDir} does not exist, skipping...`, 'warning');
     }
 
+    // Add theme to existing brands
+    log(`Adding theme ${themeCode} to existing brands...`);
+    const existingBrands = config.brands || [];
+    for (const brandCode of existingBrands) {
+      log(`Adding theme ${themeCode} to brand ${brandCode}...`);
+      
+      // Process blocks directory for brand (iterate over all blocks)
+      const blocksDir = path.join(process.cwd(), 'blocks');
+      if (fsSync.existsSync(blocksDir)) {
+        const blockFolders = fsSync.readdirSync(blocksDir).filter(f => fsSync.statSync(path.join(blocksDir, f)).isDirectory());
+        for (const blockName of blockFolders) {
+          const brandBlockDir = path.join(blocksDir, blockName, brandCode);
+          if (fsSync.existsSync(brandBlockDir)) {
+            await generateThemeCSSWithinBrandFolder(themeCode, brandBlockDir, null, false);
+          }
+        }
+      }
+      
+      // Process templates directory for brand
+      const templatesDir = path.join(process.cwd(), 'templates');
+      if (fsSync.existsSync(templatesDir)) {
+        await generateThemeCSSWithinBrandFolder(themeCode, path.join(templatesDir, brandCode), null, false);
+      }
+      
+      // Process styles directory for brand
+      const stylesDir = path.join(process.cwd(), 'styles');
+      if (fsSync.existsSync(stylesDir)) {
+        await generateThemeCSSWithinBrandFolder(themeCode, path.join(stylesDir, brandCode), null, true);
+      }
+    }
+
     if (VERBOSE_MODE) {
       logComplete(`Theme CSS generation completed for ${themeCode}`);
     } else {
-      log(`✅ Theme CSS generation completed for ${themeCode}. Processed ${totalDirectories} directories.`, 'success');
+      log(`✅ Theme CSS generation completed for ${themeCode}. Processed ${totalDirectories} directories and added to ${existingBrands.length} existing brands.`, 'success');
     }
   } catch (error) {
     log(`Theme CSS generation failed for ${themeCode}: ${error.message}`, 'error');
