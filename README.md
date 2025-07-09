@@ -44,7 +44,7 @@ npm run theme:init
 ### Remove Brand Theme
 Remove unwanted brand theme
 ```
-npm run theme:remove
+npm run scaffold:remove
 ```
 
 ### Start Theme
@@ -52,7 +52,7 @@ npm run theme:remove
 Starts Gulp server to generate and serve merged CSS
 
 ```
-npm run theme:start
+npm run scaffold:start
 ```
 
 ### Build Theme
@@ -63,7 +63,7 @@ Configure BRANDS .env
  BRANDS=brand1,brand2,brand3
 
 ```
-npm run theme:build
+npm run scaffold:build
 ```
 
 ## Environment Proxy

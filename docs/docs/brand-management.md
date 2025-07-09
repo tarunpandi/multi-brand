@@ -21,7 +21,7 @@ The brand management system allows you to:
 The easiest way to create a new brand is using the built-in generator:
 
 ```bash
-npm run theme:create
+npm run scaffold:create
 ```
 
 You will be prompted with a menu like this:
@@ -121,13 +121,13 @@ export default async function getBlockConfigs() {
 
 ### Global Brand Configuration
 
-The project automatically tracks brands and themes through the build system. The theme commands handle brand management:
+The project automatically tracks brands and themes through the build system. The scaffold commands handle brand management:
 
-- `npm run theme:create` - to add new brands
-- `npm run theme:remove` - to remove brands
-- `npm run theme:build` - to regenerate configurations
+- `npm run scaffold:create` - to add new brands
+- `npm run scaffold:remove` - to remove brands
+- `npm run scaffold:build` - to regenerate configurations
 
-**⚠️ Important:** Brand configuration is handled automatically by the theme system. Use the theme commands for brand management.
+**⚠️ Important:** Brand configuration is handled automatically by the scaffold system. Use the scaffold commands for brand management.
 
 ## Brand-Specific Components
 
@@ -185,14 +185,14 @@ export default async function getBlockConfigs() {
 
 1. **Create the brand:**
 ```bash
-npm run theme:create
+npm run scaffold:create
 # Select: Brand
 # Enter: Brand Name → brand-name
 ```
 
 2. **Start development server:**
 ```bash
-npm run theme:start
+npm run scaffold:start
 ```
 
 3. **Configure brand metadata:**
@@ -270,13 +270,13 @@ To build CSS for a specific brand:
 
 ```bash
 # Build single brand
-BRANDS=brand-name npm run theme:build
+BRANDS=brand-name npm run scaffold:build
 
 # Build multiple brands
-BRANDS=brand-name,nike npm run theme:build
+BRANDS=brand-name,nike npm run scaffold:build
 
 # Build all brands
-npm run theme:build
+npm run scaffold:build
 ```
 
 ### Brand-Specific Build Output
@@ -303,7 +303,7 @@ styles/brand-name/
 To remove an unwanted brand:
 
 ```bash
-npm run theme:remove
+npm run scaffold:remove
 ```
 
 This interactive tool will:
@@ -325,7 +325,7 @@ This interactive tool will:
 For detailed removal information:
 
 ```bash
-npm run theme:remove:log
+npm run scaffold:remove:log
 ```
 
 
@@ -354,13 +354,13 @@ npm run theme:remove:log
 **Verbose logging:**
 ```bash
 # For creation issues
-npm run theme:create:log
+npm run scaffold:create:log
 
 # For build issues
-npm run theme:build:log
+npm run scaffold:build:log
 
 # For removal issues
-npm run theme:remove:log
+npm run scaffold:remove:log
 ```
 
 **Brand inspection:**
