@@ -18,6 +18,7 @@ You will be prompted with a menu like this:
 ? What do you want to create? (Use arrow keys)
 ❯ Block
   Theme
+  Brand
 ```
 
 - **Select "Block"** using the arrow keys and press Enter.
@@ -72,7 +73,7 @@ blocks/hero-banner/
 │   └── dark/               # Dark theme
 │       ├── _hero-banner.css # Theme-specific overrides
 │       └── hero-banner.css  # Generated combined CSS
-├── brand1/                  # Brand-specific folder
+├── brand-name/              # Brand-specific folder
 │   ├── _hero-banner.css     # Brand-specific overrides
 │   ├── hero-banner.css      # Generated brand-only CSS
 │   ├── block-config.js      # Brand-specific configuration
@@ -83,17 +84,7 @@ blocks/hero-banner/
 │       └── dark/            # Brand + Dark theme
 │           ├── _hero-banner.css # Brand+theme overrides
 │           └── hero-banner.css  # Generated combined CSS
-└── brand2/                  # Another brand
-    ├── _hero-banner.css     # Brand-specific overrides
-    ├── hero-banner.css      # Generated brand-only CSS
-    ├── block-config.js      # Brand-specific configuration
-    └── themes/              # Brand-specific themes
-        ├── light/           # Brand + Light theme
-        │   ├── _hero-banner.css # Brand+theme overrides
-        │   └── hero-banner.css  # Generated combined CSS
-        └── dark/            # Brand + Dark theme
-            ├── _hero-banner.css # Brand+theme overrides
-            └── hero-banner.css  # Generated combined CSS
+└── ...                      # More brands
 ```
 
 ### Generated File Content
@@ -286,7 +277,25 @@ blocks/cards/
 ├── cards.js               # Base functionality
 ├── block-config.js        # Configuration
 ├── compact-cards.js       # Compact variation
-└── compact-cards.css      # Compact styles
+├── compact-cards.css      # Compact styles
+├── themes/                # Root-level themes
+│   ├── light/            # Light theme
+│   │   ├── _cards.css    # Theme-specific overrides
+│   │   └── cards.css     # Generated combined CSS
+│   └── dark/             # Dark theme
+│       ├── _cards.css    # Theme-specific overrides
+│       └── cards.css     # Generated combined CSS
+└── brand-name/           # Brand-specific folder
+    ├── _cards.css        # Brand-specific overrides
+    ├── cards.css         # Generated brand-only CSS
+    ├── block-config.js   # Brand-specific configuration
+    └── themes/           # Brand-specific themes
+        ├── light/        # Brand + Light theme
+        │   ├── _cards.css # Brand+theme overrides
+        │   └── cards.css  # Generated combined CSS
+        └── dark/         # Brand + Dark theme
+            ├── _cards.css # Brand+theme overrides
+            └── cards.css  # Generated combined CSS
 ```
 
 **Example variation file:**
@@ -461,5 +470,6 @@ npm run test:browser
 ## Getting Help
 
 - Review the block documentation in this guide
+- Check the [brand management guide](./brand-management) for brand-specific information
 - Check the [theme management guide](./theme-management) for theming information
 - Report block issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 

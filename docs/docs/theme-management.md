@@ -89,17 +89,6 @@ eds-multi-brand/
 │   │   │   └── dark/         # Dark theme
 │   │   │       ├── _cards.css # Theme-specific overrides
 │   │   │       └── cards.css  # Generated combined CSS
-│   │   ├── brand-name/       # Brand-specific folder
-│   │   │   ├── _cards.css    # Brand-specific card styles
-│   │   │   ├── cards.css     # Generated brand-only CSS
-│   │   │   ├── block-config.js # Brand-specific configuration
-│   │   │   └── themes/       # Brand-specific themes
-│   │   │       ├── light/    # Brand + Light theme
-│   │   │       │   ├── _cards.css # Brand+theme overrides
-│   │   │       │   └── cards.css  # Generated combined CSS
-│   │   │       └── dark/     # Brand + Dark theme
-│   │   │           ├── _cards.css # Brand+theme overrides
-│   │   │           └── cards.css  # Generated combined CSS
 │   │   └── ...               # More brands
 │   └── ...                   # More block types
 ├── styles/                   # Global styles and themes
@@ -116,24 +105,10 @@ eds-multi-brand/
 │   │       ├── _fonts.css    # Theme-specific fonts
 │   │       ├── styles.css    # Generated combined CSS
 │   │       └── fonts.css     # Generated combined CSS
-│   ├── brand-name/           # Brand-specific styles
-│   │   ├── _styles.css       # Brand-specific overrides
-│   │   ├── _fonts.css        # Brand-specific fonts
-│   │   ├── styles.css        # Generated brand-only CSS
-│   │   ├── fonts.css         # Generated brand-only CSS
-│   │   └── themes/           # Brand-specific themes
-│   │       ├── light/        # Brand + Light theme
-│   │       │   ├── _styles.css # Brand+theme overrides
-│   │       │   ├── _fonts.css  # Brand+theme fonts
-│   │       │   ├── styles.css  # Generated combined CSS
-│   │       │   └── fonts.css   # Generated combined CSS
-│   │       └── dark/         # Brand + Dark theme
-│   │           ├── _styles.css # Brand+theme overrides
-│   │           ├── _fonts.css  # Brand+theme fonts
-│   │           ├── styles.css  # Generated combined CSS
-│   │           └── fonts.css   # Generated combined CSS
 │   └── ...                   # More brands
+├── scripts/                  # Scripts
 ├── brand-config.json         # Auto-generated brand and theme configuration
+└── docs/                     # Documentation
 ```
 
 
@@ -437,5 +412,6 @@ The tool commands will automatically fix the configuration file.
 ### Getting Help
 
 - Review the theme management documentation in this guide
+- Check the [brand management guide](./brand-management) for brand-specific information
 - Check the [blocks and components guide](./blocks-components) for component theming
 - Report issues on [GitHub](https://github.com/acs-ui/eds-multi-brand/issues) 

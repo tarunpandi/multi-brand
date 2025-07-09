@@ -241,10 +241,9 @@ header nav .nav-tools {
   grid-area: tools;
 }
 /* Brand-specific overrides for header block */
-/* .header {
-  h1 {
-    background-color: red;
+header {
+  .nav-wrapper {
+    background-color: #00f;
+    color: #df983d;
   }
-
-
-} */
+}
