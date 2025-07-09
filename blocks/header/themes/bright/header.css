@@ -243,7 +243,7 @@ header nav .nav-tools {
 /* Brand-specific overrides for header block */
 header {
   .nav-wrapper {
-    background-color: #0000ff;
+    background-color: #00f;
     color: #df983d;
   }
 }
