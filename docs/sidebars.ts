@@ -25,13 +25,18 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'doc',
-          id: 'blocks-components',
-          label: 'Block Development',
+          id: 'theme-management',
+          label: 'Theme Management',
         },
         {
           type: 'doc',
-          id: 'theme-management',
-          label: 'Theme Management',
+          id: 'brand-management',
+          label: 'Brand Management',
+        },
+        {
+          type: 'doc',
+          id: 'blocks-components',
+          label: 'Block Development',
         },
       ],
     },

@@ -73,28 +73,6 @@ eds-multi-brand/
 │   │   │           ├── _cards.css # Brand+theme overrides
 │   │   │           └── cards.css  # Generated combined CSS
 │   │   └── ...               # More brands
-│   ├── columns/              # Layout components
-│   │   ├── columns.css       # Base column styles
-│   │   ├── columns.js        # Base column functionality
-│   │   ├── block-config.js   # Base block configuration
-│   │   ├── themes/           # Root-level themes
-│   │   │   ├── light/        # Light theme
-│   │   │   │   ├── _columns.css # Theme-specific overrides
-│   │   │   │   └── columns.css  # Generated combined CSS
-│   │   │   └── dark/         # Dark theme
-│   │   │       ├── _columns.css # Theme-specific overrides
-│   │   │       └── columns.css  # Generated combined CSS
-│   │   └── brand-name/       # Brand-specific folder
-│   │       ├── _columns.css  # Brand-specific column styles
-│   │       ├── columns.css   # Generated brand-only CSS
-│   │       ├── block-config.js # Brand-specific configuration
-│   │       └── themes/       # Brand-specific themes
-│   │           ├── light/    # Brand + Light theme
-│   │           │   ├── _columns.css # Brand+theme overrides
-│   │           │   └── columns.css  # Generated combined CSS
-│   │           └── dark/     # Brand + Dark theme
-│   │               ├── _columns.css # Brand+theme overrides
-│   │               └── columns.css  # Generated combined CSS
 │   └── ...                   # More block types
 ├── styles/                   # Global styles and themes
 │   ├── styles.css            # Base styles
@@ -129,7 +107,7 @@ eds-multi-brand/
 │   └── ...                   # More brands
 ├── scripts/                  # Scripts
 ├── brand-config.json         # Auto-generated brand and theme configuration
-└── docs/                     # This documentation
+└── docs/                     # Documentation
 ```
 ## Environments
 
@@ -145,19 +123,26 @@ To apply a brand theme and its configurations, the brand name must be configured
 
 For global configuration, you typically use a `metadata.xlsx` file. Here are sample configurations:
 
-### Brand-Only Configuration
-| URL  | Brand |
+### Theme-Only Configuration
+| URL  | Theme |
 |------|-------|
 | /**  | dark  |
 
-This configuration ensures that the `dark` brand theme and its settings are applied to all pages matching the URL pattern.
+This configuration applies the `dark` theme to all pages using the root-level theme CSS.
+
+### Brand-Only Configuration
+| URL  | Brand |
+|------|-------|
+| /**  | adobe  |
+
+This configuration ensures that the `adobe` brand and its settings are applied to all pages matching the URL pattern.
 
 ### Brand + Theme Configuration
 | URL  | Brand | Theme |
 |------|-------|-------|
-| /**  | brand-name | dark |
+| /**  | adobe | dark |
 
-This configuration applies both the `brand-name` brand and the `dark` theme to all pages. The system will use the combined CSS file: `brand-name/themes/dark/`.
+This configuration applies both the `adobe` brand and the `dark` theme to all pages. The system will use the combined CSS file: `adobe/themes/dark/`.
 
 Adjust the URL, brand, and theme values as needed for your project.
 
@@ -172,7 +157,8 @@ During development, you can switch between themes by:
 ## Next Steps
 
 - [Blocks Development](./blocks-components) - Explore available UI components
-- [Theme Management](./theme-management) - Learn how to create and manage brand themes
+- [Brand Management](./brand-management) - Learn how to create and manage brands
+- [Theme Management](./theme-management) - Learn how to create and manage themes
 
 ## Getting Help
 

@@ -32,7 +32,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Modern development workflow',
-    image: require('@site/static/img/multi-brand.jpg').default,
+    image: require('@site/static/img/workflow.jpg').default,
     description: (
       <>
         Hot reloading, linting, and build tools to get started quickly.
