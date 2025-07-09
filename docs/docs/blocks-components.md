@@ -9,7 +9,7 @@ EDS Multi-Brand provides a comprehensive set of reusable UI blocks (blocks) that
 When you run the following command:
 
 ```bash
-npm run theme:create
+npm run scaffold:create
 ```
 
 You will be prompted with a menu like this:
@@ -42,7 +42,7 @@ The generator will then create the base block structure for you, including:
 For detailed logging during block creation, use:
 
 ```bash
-npm run theme:create:log
+npm run scaffold:create:log
 ```
 
 This will show:
@@ -55,7 +55,7 @@ This will show:
 
 **Example: Creating a Hero Component**
 ```bash
-npm run theme:create
+npm run scaffold:create
 # Select: Block
 # Enter: Block Name → hero-banner
 ```

@@ -21,7 +21,7 @@ The theme management system allows you to:
 The easiest way to create new themes, brands, or blocks is using the built-in generator:
 
 ```bash
-npm run theme:create
+npm run scaffold:create
 ```
 
 You will be prompted with a menu like this:
@@ -43,22 +43,22 @@ This interactive tool will:
 #### Theme Creation and Management
 ```bash
 # Create new themes, brands, or blocks (interactive)
-npm run theme:create
+npm run scaffold:create
 
 # Create with verbose logging
-npm run theme:create:log
+npm run scaffold:create:log
 
 # Build CSS for all brands and themes
-npm run theme:build
+npm run scaffold:build
 
 # Build with verbose logging
-npm run theme:build:log
+npm run scaffold:build:log
 
 # Remove themes, brands, or blocks (interactive)
-npm run theme:remove
+npm run scaffold:remove
 
 # Remove with verbose logging
-npm run theme:remove:log
+npm run scaffold:remove:log
 
 # Clean up crash log files
 npm run clean
@@ -67,7 +67,7 @@ npm run clean
 #### Development Commands
 ```bash
 # Start development server with CSS generation
-npm run theme:start
+npm run scaffold:start
 
 # Start all services (theme server + AEM proxy + docs)
 npm run start:all
@@ -140,10 +140,10 @@ npm run theme:build
 
 The project uses `brand-config.json` to track brands and themes. **This file is automatically updated by the tool commands and should not be edited manually.**
 
-**⚠️ Important:** Never edit `brand-config.json` manually. Use the theme commands instead:
-- `npm run theme:create` - to add new brands/themes
-- `npm run theme:remove` - to remove brands/themes
-- `npm run theme:build` - to regenerate CSS
+**⚠️ Important:** Never edit `brand-config.json` manually. Use the scaffold commands instead:
+- `npm run scaffold:create` - to add new brands/themes
+- `npm run scaffold:remove` - to remove brands/themes
+- `npm run scaffold:build` - to regenerate CSS
 
 
 ## Theme Development Workflow
@@ -152,7 +152,7 @@ The project uses `brand-config.json` to track brands and themes. **This file is 
 
 1. **Start the development server:**
 ```bash
-npm run theme:start
+npm run scaffold:start
 ```
 
 This starts a Gulp server that:
@@ -174,13 +174,13 @@ For detailed logging during development, use the `:log` variants:
 
 ```bash
 # Build with detailed logs
-npm run theme:build:log
+npm run scaffold:build:log
 
 # Create with detailed logs
-npm run theme:create:log
+npm run scaffold:create:log
 
 # Remove with detailed logs
-npm run theme:remove:log
+npm run scaffold:remove:log
 ```
 
 This will show:
@@ -197,7 +197,7 @@ This will show:
 To build CSS for all configured brands and themes:
 
 ```bash
-npm run theme:build
+npm run scaffold:build
 ```
 
 ### Build with Verbose Logging
@@ -205,7 +205,7 @@ npm run theme:build
 For detailed build information:
 
 ```bash
-npm run theme:build:log
+npm run scaffold:build:log
 ```
 
 ### Build Output
@@ -301,7 +301,7 @@ blocks/cards/brand-name/
 To remove unwanted themes, brands, or blocks:
 
 ```bash
-npm run theme:remove
+npm run scaffold:remove
 ```
 
 This interactive tool will:
@@ -316,7 +316,7 @@ This interactive tool will:
 For detailed removal information:
 
 ```bash
-npm run theme:remove:log
+npm run scaffold:remove:log
 ```
 
 ### What Gets Removed
@@ -344,7 +344,7 @@ npm run theme:remove:log
 - Ensure the build process completed successfully
 
 **Styles not updating:**
-- Restart the theme server: `npm run theme:start`
+- Restart the theme server: `npm run scaffold:start`
 - Clear browser cache
 - Check for CSS compilation errors
 
@@ -369,13 +369,13 @@ If you need to debug issues, use the verbose logging commands:
 
 ```bash
 # For creation issues
-npm run theme:create:log
+npm run scaffold:create:log
 
 # For build issues
-npm run theme:build:log
+npm run scaffold:build:log
 
 # For removal issues
-npm run theme:remove:log
+npm run scaffold:remove:log
 ```
 
 ### Configuration Issues
@@ -393,18 +393,18 @@ If your brands or themes aren't being recognized, you can verify the `brand-conf
 
 1. **Recreate the missing brand/theme:**
    ```bash
-   npm run theme:create
+   npm run scaffold:create
    ```
 
 2. **Remove and recreate if needed:**
    ```bash
-   npm run theme:remove
-   npm run theme:create
+   npm run scaffold:remove
+   npm run scaffold:create
    ```
 
 3. **Regenerate all CSS:**
    ```bash
-   npm run theme:build
+   npm run scaffold:build
    ```
 
 The tool commands will automatically fix the configuration file.
