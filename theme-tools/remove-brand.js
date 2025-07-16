@@ -108,33 +108,79 @@ async function checkAndRemoveEmptyDirectory(dirPath) {
 // Brand removal functions
 async function removeBrandCSSForFolder(brandCode, directory, subtree = false) {
   try {
-  const filePath = subtree ? `**/${brandCode}` : `${brandCode}`;
-  const pattern = path.join(directory, filePath);
-
-    return new Promise((resolve, reject) => {
-      glob(pattern, { onlyDirectories: true }, async (err, matches) => {
-    if (err) {
-          log(`Error finding directories: ${err.message}`, 'error');
-          reject(err);
-          return;
-        }
-
-        if (matches.length === 0) {
-          log(`No brand directories found in ${directory}`, 'warning');
-          resolve(0);
-      return;
+    // For styles directory, we need to handle both the brand directory and any nested theme directories
+    let patterns = [];
+    if (subtree) {
+      // For blocks, templates, react-app - look for nested brand directories
+      patterns.push(path.join(directory, `**/${brandCode}`));
+    } else {
+      // For styles directory - look for brand directory and its nested theme directories
+      patterns.push(path.join(directory, brandCode));
+      patterns.push(path.join(directory, `${brandCode}/**`));
     }
 
-        log(`Found ${matches.length} brand directories to remove in ${directory}`);
-        let removedCount = 0;
+    return new Promise((resolve, reject) => {
+      // Use multiple glob patterns to catch all brand-related directories
+      const allMatches = [];
+      let completedPatterns = 0;
+      let hasError = false;
 
-        for (const dir of matches) {
-          const success = await removeDirectory(dir);
-          if (success) removedCount++;
-        }
+      patterns.forEach((pattern) => {
+        glob(pattern, { onlyDirectories: true }, async (err, matches) => {
+          if (err) {
+            log(`Error finding directories: ${err.message}`, 'error');
+            hasError = true;
+            completedPatterns++;
+            if (completedPatterns === patterns.length) {
+              if (hasError) {
+                reject(new Error('Error during directory search'));
+              } else {
+                resolve(0);
+              }
+            }
+            return;
+          }
 
-        log(`Removed ${removedCount} brand directories from ${directory}`);
-        resolve(removedCount);
+          // Add unique matches to the list
+          matches.forEach(match => {
+            if (!allMatches.includes(match)) {
+              allMatches.push(match);
+            }
+          });
+
+          completedPatterns++;
+          if (completedPatterns === patterns.length) {
+            if (hasError) {
+              reject(new Error('Error during directory search'));
+              return;
+            }
+
+            if (allMatches.length === 0) {
+              log(`No brand directories found in ${directory}`, 'warning');
+              resolve(0);
+              return;
+            }
+
+            log(`Found ${allMatches.length} brand directories to remove in ${directory}`);
+            if (VERBOSE_MODE) {
+              allMatches.forEach(match => {
+                log(`Will remove: ${match}`, 'info');
+              });
+            }
+            let removedCount = 0;
+
+            // Sort by path length (deepest first) to ensure proper removal order
+            allMatches.sort((a, b) => b.length - a.length);
+
+            for (const dir of allMatches) {
+              const success = await removeDirectory(dir);
+              if (success) removedCount++;
+            }
+
+            log(`Removed ${removedCount} brand directories from ${directory}`);
+            resolve(removedCount);
+          }
+        });
       });
     });
   } catch (error) {
@@ -146,41 +192,85 @@ async function removeBrandCSSForFolder(brandCode, directory, subtree = false) {
 // Theme removal functions
 async function removeThemeCSSForFolder(themeCode, directory, subtree = false) {
   try {
-    const filePath = subtree ? `**/themes/${themeCode}` : `themes/${themeCode}`;
-    const pattern = path.join(directory, filePath);
+    // For theme removal, search for both root-level and brand-specific theme directories
+    let patterns = [];
+    if (subtree) {
+      // For blocks, templates, react-app - look for nested theme directories
+      patterns.push(path.join(directory, `**/themes/${themeCode}`));
+    } else {
+      // For styles directory - look for root-level and brand-specific theme directories
+      patterns.push(path.join(directory, `themes/${themeCode}`)); // root-level
+      patterns.push(path.join(directory, `*/themes/${themeCode}`)); // brand-specific
+      patterns.push(path.join(directory, `*/themes/${themeCode}/**`)); // nested under brand-specific
+    }
 
     return new Promise((resolve, reject) => {
-      glob(pattern, { onlyDirectories: true }, async (err, matches) => {
-        if (err) {
-          log(`Error finding theme directories: ${err.message}`, 'error');
-          reject(err);
-          return;
-        }
+      const allMatches = [];
+      let completedPatterns = 0;
+      let hasError = false;
 
-        if (matches.length === 0) {
-          log(`No theme directories found in ${directory}`, 'warning');
-          resolve(0);
-          return;
-        }
-
-        log(`Found ${matches.length} theme directories to remove in ${directory}`);
-        let removedCount = 0;
-
-        for (const dir of matches) {
-          const success = await removeDirectory(dir);
-          if (success) {
-            removedCount++;
-            
-            // Check if the parent themes directory is now empty and remove it
-            const themesDir = path.dirname(dir);
-            await checkAndRemoveEmptyDirectory(themesDir);
+      patterns.forEach((pattern) => {
+        glob(pattern, { onlyDirectories: true }, async (err, matches) => {
+          if (err) {
+            log(`Error finding theme directories: ${err.message}`, 'error');
+            hasError = true;
+            completedPatterns++;
+            if (completedPatterns === patterns.length) {
+              if (hasError) {
+                reject(new Error('Error during directory search'));
+              } else {
+                resolve(0);
+              }
+            }
+            return;
           }
-        }
 
-        log(`Removed ${removedCount} theme directories from ${directory}`);
-        resolve(removedCount);
+          matches.forEach(match => {
+            if (!allMatches.includes(match)) {
+              allMatches.push(match);
+            }
+          });
+
+          completedPatterns++;
+          if (completedPatterns === patterns.length) {
+            if (hasError) {
+              reject(new Error('Error during directory search'));
+              return;
+            }
+
+            if (allMatches.length === 0) {
+              log(`No theme directories found in ${directory}`, 'warning');
+              resolve(0);
+              return;
+            }
+
+            log(`Found ${allMatches.length} theme directories to remove in ${directory}`);
+            if (VERBOSE_MODE) {
+              allMatches.forEach(match => {
+                log(`Will remove: ${match}`, 'info');
+              });
+            }
+            let removedCount = 0;
+
+            // Sort by path length (deepest first) to ensure proper removal order
+            allMatches.sort((a, b) => b.length - a.length);
+
+            for (const dir of allMatches) {
+              const success = await removeDirectory(dir);
+              if (success) {
+                removedCount++;
+                // Check if the parent themes directory is now empty and remove it
+                const themesDir = path.dirname(dir);
+                await checkAndRemoveEmptyDirectory(themesDir);
+              }
+            }
+
+            log(`Removed ${removedCount} theme directories from ${directory}`);
+            resolve(removedCount);
+          }
+        });
+      });
     });
-  });
   } catch (error) {
     log(`Error removing theme CSS from ${directory}: ${error.message}`, 'error');
     throw error;

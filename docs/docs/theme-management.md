@@ -133,7 +133,7 @@ mkdir -p blocks/*/brand-name/themes/theme-name
 
 ### Generate theme CSS
 ```bash
-npm run theme:build
+npm run scaffold:build
 ```
 
 ### Configuration File

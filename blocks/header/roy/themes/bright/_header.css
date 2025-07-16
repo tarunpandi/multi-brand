@@ -2,8 +2,9 @@
 
 /* Brand-specific overrides for roy block */
 
-header {
+.roy header {
   .nav-wrapper {
-    background-color: #6e6c6c;
+    background-color: rgb(41, 238, 137);
+    color: #6f4c1d;
   }
 }
