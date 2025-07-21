@@ -221,46 +221,78 @@ async function generateStylesCSS(currentDir) {
       log(`Processing styles directory`);
     }
     
-    const styleFiles = ['styles.css', 'fonts.css'];
+    const styleFiles = ['styles.css', 'fonts.css', 'tokens.css'];
     let totalGenerated = 0;
     
     for (const fileName of styleFiles) {
-      const basePath = path.join(stylesDir, fileName);
-      if (!fsSync.existsSync(basePath)) {
-        log(`Style file not found: ${basePath}`, 'warning');
-        continue;
-      }
-      
       if (VERBOSE_MODE) {
         log(`Processing style file: ${fileName}`);
       }
       let fileGeneratedCount = 0;
       
-      // Generate theme-only CSS files (root level themes)
-      for (const theme of themes) {
-        const themeCSSPath = path.join(stylesDir, 'themes', theme, `_${fileName}`);
-        const outputPath = path.join(stylesDir, 'themes', theme, fileName);
-        
-        const success = await combineCSSFiles(basePath, null, themeCSSPath, outputPath);
-        if (success) fileGeneratedCount++;
-      }
-      
-      // Generate brand + theme CSS files
-      for (const brand of brands) {
-        const brandCSSPath = path.join(stylesDir, brand, `_${fileName}`);
-        
-        // Brand-only CSS
-        const brandOutputPath = path.join(stylesDir, brand, fileName);
-        const brandSuccess = await combineCSSFiles(basePath, brandCSSPath, null, brandOutputPath);
-        if (brandSuccess) fileGeneratedCount++;
-        
-        // Brand + theme CSS (themes within brand)
+      if (fileName === 'tokens.css') {
+        // Special handling for tokens.css - use only override files, not base file
+        // Generate theme-only CSS files (root level themes)
         for (const theme of themes) {
-          const themeCSSPath = path.join(stylesDir, brand, 'themes', theme, `_${fileName}`);
-          const outputPath = path.join(stylesDir, brand, 'themes', theme, fileName);
+          const themeCSSPath = path.join(stylesDir, 'themes', theme, `_${fileName}`);
+          const outputPath = path.join(stylesDir, 'themes', theme, fileName);
           
-          const success = await combineCSSFiles(basePath, brandCSSPath, themeCSSPath, outputPath);
+          const success = await combineCSSFiles(null, null, themeCSSPath, outputPath);
           if (success) fileGeneratedCount++;
+        }
+        
+        // Generate brand + theme CSS files
+        for (const brand of brands) {
+          const brandCSSPath = path.join(stylesDir, brand, `_${fileName}`);
+          
+          // Brand-only CSS
+          const brandOutputPath = path.join(stylesDir, brand, fileName);
+          const brandSuccess = await combineCSSFiles(null, brandCSSPath, null, brandOutputPath);
+          if (brandSuccess) fileGeneratedCount++;
+          
+          // Brand + theme CSS (themes within brand)
+          for (const theme of themes) {
+            const themeCSSPath = path.join(stylesDir, brand, 'themes', theme, `_${fileName}`);
+            const outputPath = path.join(stylesDir, brand, 'themes', theme, fileName);
+            
+            const success = await combineCSSFiles(null, brandCSSPath, themeCSSPath, outputPath);
+            if (success) fileGeneratedCount++;
+          }
+        }
+      } else {
+        // Standard handling for other CSS files
+        const basePath = path.join(stylesDir, fileName);
+        if (!fsSync.existsSync(basePath)) {
+          log(`Style file not found: ${basePath}`, 'warning');
+          continue;
+        }
+        
+        // Generate theme-only CSS files (root level themes)
+        for (const theme of themes) {
+          const themeCSSPath = path.join(stylesDir, 'themes', theme, `_${fileName}`);
+          const outputPath = path.join(stylesDir, 'themes', theme, fileName);
+          
+          const success = await combineCSSFiles(basePath, null, themeCSSPath, outputPath);
+          if (success) fileGeneratedCount++;
+        }
+        
+        // Generate brand + theme CSS files
+        for (const brand of brands) {
+          const brandCSSPath = path.join(stylesDir, brand, `_${fileName}`);
+          
+          // Brand-only CSS
+          const brandOutputPath = path.join(stylesDir, brand, fileName);
+          const brandSuccess = await combineCSSFiles(basePath, brandCSSPath, null, brandOutputPath);
+          if (brandSuccess) fileGeneratedCount++;
+          
+          // Brand + theme CSS (themes within brand)
+          for (const theme of themes) {
+            const themeCSSPath = path.join(stylesDir, brand, 'themes', theme, `_${fileName}`);
+            const outputPath = path.join(stylesDir, brand, 'themes', theme, fileName);
+            
+            const success = await combineCSSFiles(basePath, brandCSSPath, themeCSSPath, outputPath);
+            if (success) fileGeneratedCount++;
+          }
         }
       }
       

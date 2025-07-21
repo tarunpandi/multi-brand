@@ -1,5 +1,7 @@
 /* stylelint-disable no-empty-source */
 
+@import '../fragment.css';
+
 /* Brand-specific overrides for fragment block */
 
 /* .fragment {
@@ -9,3 +11,4 @@
 
 
 } */
+

@@ -32,6 +32,8 @@
   }
 }
 
+@import '../../columns.css';
+
 /* Brand-specific overrides for columns block */
 
 /* .columns {
@@ -41,3 +43,4 @@
 
 
 } */
+

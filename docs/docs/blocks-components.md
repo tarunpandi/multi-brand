@@ -444,15 +444,16 @@ If you prefer to create blocks manually, follow the structure shown in the [Bloc
 ## Block Testing
 
 ### Visual Testing
-
-Use the built-in visual testing framework:
+TBD
+<!-- Use the built-in visual testing framework:
 
 ```bash
 npm run test:visual
-```
+``` -->
 
-<!-- ### Accessibility Testing
-
+ ### Accessibility Testing
+ TBD
+<!--
 Ensure blocks meet accessibility standards:
 
 ```bash

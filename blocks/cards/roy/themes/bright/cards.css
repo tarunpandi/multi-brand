@@ -26,6 +26,8 @@
   object-fit: cover;
 }
 
+@import '../cards.css';
+
 /* Brand-specific overrides for cards block */
 
 /* .cards {
@@ -36,6 +38,8 @@
 
 } */
 
+@import '../../cards.css';
+
 /* Brand-specific overrides for roy block */
 
 /* .roy {
@@ -45,3 +49,4 @@
 
 
 } */
+

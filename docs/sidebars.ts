@@ -40,6 +40,11 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
+    {
+      type: 'doc',
+      id: 'faq',
+      label: 'FAQ',
+    },
   ],
 };
 

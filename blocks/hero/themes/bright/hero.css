@@ -35,6 +35,7 @@
     padding: 40px 32px;
   }
 }
+@import '../../hero.css';
 
 /* Brand-specific overrides for hero block */
 
@@ -45,3 +46,4 @@
 
 
 } */
+
