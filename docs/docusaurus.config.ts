@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'EDS Multi-Brand Documentation',
-  tagline: 'Developer documentation for EDS Multi-Brand project',
+  tagline: 'Developer documentation for EDS Multi-Brand boilerplate',
   favicon: 'img/adobe-franklin-logo.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -107,6 +107,10 @@ const config: Config = {
             {
               label: 'Blocks',
               to: '/docs/blocks-components',
+            },
+            {
+              label: 'FAQ',
+              to: '/docs/faq',
             },
           ],
         },

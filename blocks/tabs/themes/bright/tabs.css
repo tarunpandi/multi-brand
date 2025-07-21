@@ -48,6 +48,7 @@
   color: var(--tabs-color-header);
 }
 
+
 .tabs .tabs-list button[aria-selected='true'] {
   border-bottom: 1px solid var(--background-color);
   background-color: var(--background-color);
@@ -68,6 +69,7 @@
 .tabs.reverse .tabs-list button {
   background-color: blueviolet;
 }
+@import '../../tabs.css';
 
 /* Brand-specific overrides for tabs block */
 
@@ -78,3 +80,4 @@
 
 
 } */
+

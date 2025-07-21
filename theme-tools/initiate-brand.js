@@ -188,7 +188,7 @@ async function generateThemeCSSWithinBrandFolder(themeCode, brandDir, fileName, 
     
     if (isStyleFolder) {
       // For styles directory, generate theme-specific files
-      cssFilesToGenerate = ['styles.css', 'fonts.css', 'lazy-styles.css'];
+      cssFilesToGenerate = ['styles.css', 'fonts.css', 'lazy-styles.css', 'tokens.css'];
     } else {
       // For blocks directory, determine the block name and generate block-specific file
       const pathParts = brandDir.split(path.sep);

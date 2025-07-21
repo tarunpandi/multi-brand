@@ -27,7 +27,7 @@ The AEM Multi-Brand project is organized to support multiple brands with shared 
 To get started with the AEM Multi-Brand project:
 
 1. **Install dependencies**: `npm install`
-2. **Initialize a new theme**: `npm run theme:init`
+2. **Initialize a new theme**: `npm run scaffold:create`
 3. **Start development**: `npm start`
 
 ## Contributing

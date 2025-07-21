@@ -19,6 +19,8 @@ footer .footer p {
   }
 }
 
+@import '../footer.css';
+
 /* Brand-specific overrides for footer block */
 
 /* .footer {
@@ -29,6 +31,8 @@ footer .footer p {
 
 } */
 
+@import '../../footer.css';
+
 /* Brand-specific overrides for roy block */
 
 /* .roy {
@@ -38,3 +42,4 @@ footer .footer p {
 
 
 } */
+
