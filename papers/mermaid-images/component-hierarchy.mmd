@@ -6,6 +6,7 @@ flowchart TB
         BaseHeader["Base Header"]
         BaseFooter["Base Footer"]
         BaseTabs["Base Tabs"]
+        BaseConfig["Base Configs"]
   end
  subgraph subGraph1["Brand Layer"]
         BrandA["Brand A"]
@@ -20,6 +21,7 @@ flowchart TB
         BrandCCards["Brand C Cards"]
         BrandCHero["Brand C Hero"]
         BrandCHeader["Brand C Header"]
+        BrandConfig["Brand Config"]
   end
  subgraph subGraph2["Theme Layer"]
         Light["Light Theme"]
@@ -54,7 +56,9 @@ flowchart TB
     Dark --> DarkCards & DarkHero & DarkHeader
     Custom --> CustomCards & CustomHero & CustomHeader
     BaseCards -. inherits .-> BrandACards & BrandBCards & BrandCCards
-    BrandACards -. inherits .-> LightCards & DarkCards & CustomCards
+    BrandACards -. inherits .-> LightCards
+    BrandBCards -. inherits .-> DarkCards
+    BrandCCards -. inherits .-> CustomCards
     LightCards --> FinalA
     DarkCards --> FinalB
     CustomCards --> FinalC
@@ -96,8 +100,10 @@ flowchart TB
     classDef brandClass fill:#fff0f0,stroke:#cc0000,stroke-width:2px
     classDef themeClass fill:#f0fff0,stroke:#00cc00,stroke-width:2px
     classDef finalClass fill:#fff8f0,stroke:#ff6600,stroke-width:2px
+    style BaseConfig fill:#BBDEFB
+    style BrandConfig fill:#FFCDD2,stroke:#FF6D00
     style subGraph0 fill:#FFFFFF
-    style subGraph1 fill:#FFFFFF
+    style subGraph1 fill:#FFFFFF,color:#000000
     style subGraph2 fill:#FFFFFF
     style subGraph3 fill:#FFFFFF
     style subGraph4 fill:transparent
