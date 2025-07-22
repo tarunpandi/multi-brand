@@ -9,36 +9,107 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Check if verbose mode is enabled
+let VERBOSE_MODE = false;
+if (process.argv.includes('--verbose') || process.argv.includes('--log')) {
+  VERBOSE_MODE = true;
+}
+
+// Utility functions
+function log(message, type = 'info') {
+  if (!VERBOSE_MODE && type === 'info') {
+    return; // Skip info messages in quiet mode
+  }
+  
+  const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
+  const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+  console.log(`[${timestamp}] ${prefix} ${message}`);
+}
+
+function readConfig() {
+  try {
+    const configPath = path.resolve(__dirname, '../brand-config.json');
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      return {
+        brands: config.brands || [],
+        themes: config.themes || ['light', 'dark']
+      };
+    }
+    return { brands: [], themes: ['light', 'dark'] };
+  } catch (error) {
+    log(`Error reading brand-config.json: ${error.message}`, 'warning');
+    return { brands: [], themes: ['light', 'dark'] };
+  }
+}
+
 export default function (plop) {
   // run command action to run commands in the terminal
   plop.setActionType('runCommand', (answers, config) => new Promise((resolve, reject) => {
     try {
-      console.log('Running Node.js script.', config.command);
-      // Replace this with any Node.js command you want to run
+      if (VERBOSE_MODE) {
+        log(`Running command: ${config.command}`);
+      }
       execSync(config.command, { stdio: 'inherit' });
+      if (VERBOSE_MODE) {
+        log(`Command completed successfully`, 'success');
+      }
       resolve();
     } catch (error) {
-      console.error('Error running Node.js command:', error.message);
+      log(`Error running command: ${error.message}`, 'error');
       reject(error);
-      throw new Error('Node.js command failed.');
     }
   }));
 
+  // remove command action to run remove commands
+  plop.setActionType('removeCommand', (answers, config) => new Promise((resolve, reject) => {
+    try {
+      if (VERBOSE_MODE) {
+        log(`Running remove command: ${config.command}`);
+      }
+      execSync(config.command, { stdio: 'inherit' });
+      if (VERBOSE_MODE) {
+        log(`Remove command completed successfully`, 'success');
+      }
+      resolve();
+    } catch (error) {
+      log(`Error running remove command: ${error.message}`, 'error');
+      reject(error);
+    }
+  }));
+
+  // summary action to show completion message
+  plop.setActionType('showSummary', (answers, config) => {
+    if (!VERBOSE_MODE) {
+      const action = config.action || 'created';
+      log(`✅ ${config.summaryType} "${answers.name}" ${action} successfully!`, 'success');
+    }
+    return 'Summary shown';
+  });
+
   // controller generator
   plop.setGenerator('component', {
-    description: 'Create a theme or Block or React Component',
+    description: 'Create a theme, block, or brand',
     prompts: [
       {
         type: 'list',
         name: 'type',
         message: 'What do you want to create?',
-        choices: ['Block', 'Theme'],
+        choices: ['Block', 'Theme', 'Brand'],
       },
       {
         type: 'input',
         name: 'name',
         message: (answers) => `Enter ${answers.type} name:`,
-        when: (answers) => answers.type !== 'Theme', // skip this prompt if type is Theme
+        validate: (input) => {
+          if (!input || input.trim() === '') {
+            return 'Name cannot be empty';
+          }
+          if (!/^[a-zA-Z0-9-_]+$/.test(input)) {
+            return 'Name can only contain letters, numbers, hyphens, and underscores';
+          }
+          return true;
+        },
       },
     ],
     actions: (data) => {
@@ -50,6 +121,7 @@ export default function (plop) {
           templateFile: `plop-templates/${ext}-template/index.${ext}.template`,
         },
       ];
+      
       switch (data.type) {
         case 'Block':
           actions.push({
@@ -65,18 +137,27 @@ export default function (plop) {
             templateFile: 'plop-templates/index.block-config.js',
           });
 
-          // Read brands from brand-config.json
-          let brands = [];
-          try {
-            const configPath = path.resolve(__dirname, '../brand-config.json');
-            if (fs.existsSync(configPath)) {
-              const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-              brands = config.brands || [];
-            }
-          } catch (e) {
-            console.error('Could not read brand-config.json:', e);
+          // Read brands and themes from brand-config.json
+          const config = readConfig();
+          const brands = config.brands;
+          const themes = config.themes;
+
+          if (VERBOSE_MODE) {
+            log(`Found ${brands.length} brands and ${themes.length} themes in configuration`);
           }
 
+          // Generate theme folders at root level under themes/ directory
+          themes.forEach((theme) => {
+            actions.push({
+              type: 'add',
+              path: `../blocks/{{name}}/themes/${theme}/_{{name}}.css`,
+              templateFile: 'plop-templates/index.css.template',
+              skipIfExists: true,
+              data: { name: data.name },
+            });
+          });
+
+          // Generate brand folders with theme subfolders under themes/ directory
           brands.forEach((brand) => {
             actions.push({
               type: 'add',
@@ -91,6 +172,23 @@ export default function (plop) {
               templateFile: 'plop-templates/index.block-config.js',
               skipIfExists: true,
             });
+            
+            // Generate theme folders within brand folders under themes/ directory
+            themes.forEach((theme) => {
+              actions.push({
+                type: 'add',
+                path: `../blocks/{{name}}/${brand}/themes/${theme}/_{{name}}.css`,
+                templateFile: 'plop-templates/index.css.template',
+                skipIfExists: true,
+                data: { name: data.name },
+              });
+            });
+          });
+          
+          // Add summary action for Block
+          actions.push({
+            type: 'showSummary',
+            summaryType: 'Block',
           });
           break;
         case 'React Component':
@@ -110,19 +208,107 @@ export default function (plop) {
         case 'Theme':
           actions = [
             {
-              type: 'add',
-              path: '../styles/{{name}}/_{{name}}.css',
-              template: '/* {{name}} specific code goes here */',
-              data: { name: data.name },
-              skipIfExists: true,
+              type: 'runCommand',
+              command: `node theme-tools/initiate-brand.js theme ${data.name}${VERBOSE_MODE ? ' --verbose' : ''}`,
             },
             {
-              type: 'runCommand',
-              command: 'node theme-tools/initiate-brand.js', // && npm run theme:build
+              type: 'showSummary',
+              summaryType: 'Theme',
             }
           ];
           break;
-        default: break;
+        case 'Brand':
+          actions = [
+            {
+              type: 'runCommand',
+              command: `node theme-tools/initiate-brand.js brand ${data.name}${VERBOSE_MODE ? ' --verbose' : ''}`,
+            },
+            {
+              type: 'showSummary',
+              summaryType: 'Brand',
+            }
+          ];
+          break;
+        default: 
+          log(`Unknown type: ${data.type}`, 'error');
+          break;
+      }
+      return actions;
+    },
+  });
+
+  // remove generator
+  plop.setGenerator('remove', {
+    description: 'Remove a theme, brand, or block',
+    prompts: [
+      {
+        type: 'list',
+        name: 'type',
+        message: 'What do you want to remove?',
+        choices: ['Block', 'Theme', 'Brand'],
+      },
+      {
+        type: 'input',
+        name: 'name',
+        message: (answers) => `Enter ${answers.type} name to remove:`,
+        validate: (input) => {
+          if (!input || input.trim() === '') {
+            return 'Name cannot be empty';
+          }
+          return true;
+        },
+      },
+      {
+        type: 'confirm',
+        name: 'confirm',
+        message: (answers) => `Are you sure you want to remove ${answers.type} "${answers.name}"? This action cannot be undone.`,
+        default: false,
+      },
+    ],
+    actions: (data) => {
+      if (!data.confirm) {
+        log('Operation cancelled by user', 'warning');
+        return [];
+      }
+
+      const actions = [];
+      switch (data.type) {
+        case 'Brand':
+          actions.push({
+            type: 'removeCommand',
+            command: `node theme-tools/remove-brand.js brand ${data.name}${VERBOSE_MODE ? ' --verbose' : ''}`,
+          });
+          actions.push({
+            type: 'showSummary',
+            summaryType: 'Brand',
+            action: 'removed',
+          });
+          break;
+        case 'Theme':
+          actions.push({
+            type: 'removeCommand',
+            command: `node theme-tools/remove-brand.js theme ${data.name}${VERBOSE_MODE ? ' --verbose' : ''}`,
+          });
+          actions.push({
+            type: 'showSummary',
+            summaryType: 'Theme',
+            action: 'removed',
+          });
+          break;
+        case 'Block':
+          actions.push({
+            type: 'removeCommand',
+            command: `node theme-tools/remove-brand.js block ${data.name}${VERBOSE_MODE ? ' --verbose' : ''}`,
+          });
+          actions.push({
+            type: 'showSummary',
+            summaryType: 'Block',
+            action: 'removed',
+          });
+          break;
+        default:
+          log(`Unknown type: ${data.type}`, 'error');
+          break;
       }
       return actions;
     },

@@ -7,6 +7,18 @@ Your project's description...
 
 ## Documentation
 
+### Project Documentation
+
+📚 **[View Full Documentation](https://acs-ui.github.io/eds-multi-brand-docs/)**
+
+Our comprehensive documentation covers:
+- Getting started with EDS Multi-Brand
+- Theme and brand management
+- Block development
+- Troubleshooting guide
+
+### AEM Documentation
+
 Before using the aem-boilerplate, we recommand you to go through the documentation on https://www.aem.live/docs/ and more specifically:
 1. [Developer Tutorial](https://www.aem.live/developer/tutorial)
 2. [The Anatomy of a Project](https://www.aem.live/developer/anatomy-of-a-project)
@@ -38,13 +50,13 @@ npm i
 ### Initiate new Brand Theme
 Setup dev environment for a new brand theme
 ```
-npm run theme:init
+npm run scaffold:create
 ```
 
 ### Remove Brand Theme
 Remove unwanted brand theme
 ```
-npm run theme:remove
+npm run scaffold:remove
 ```
 
 ### Start Theme
@@ -52,7 +64,7 @@ npm run theme:remove
 Starts Gulp server to generate and serve merged CSS
 
 ```
-npm run theme:start
+npm run scaffold:start
 ```
 
 ### Build Theme
@@ -63,7 +75,7 @@ Configure BRANDS .env
  BRANDS=brand1,brand2,brand3
 
 ```
-npm run theme:build
+npm run scaffold:build
 ```
 
 ## Environment Proxy
