@@ -11,6 +11,7 @@
  */
 
 /* fallback fonts */
+
 @font-face {
   font-family: roboto-condensed-fallback;
   size-adjust: 88.82%;
@@ -83,10 +84,15 @@ h6 {
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }
+
 h2 { font-size: var(--heading-font-size-xl); }
+
 h3 { font-size: var(--heading-font-size-l); }
+
 h4 { font-size: var(--heading-font-size-m); }
+
 h5 { font-size: var(--heading-font-size-s); }
+
 h6 { font-size: var(--heading-font-size-xs); }
 
 p,
@@ -124,6 +130,7 @@ button {
 }
 
 /* links */
+
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
@@ -136,6 +143,7 @@ a:hover {
 }
 
 /* buttons */
+
 a.button:any-link,
 button {
   box-sizing: border-box;
@@ -198,6 +206,7 @@ main img {
 }
 
 /* sections */
+
 main > .section {
   margin: 40px 0;
 }
@@ -219,14 +228,12 @@ main > .section:first-of-type {
 }
 
 /* section metadata */
+
 main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
 }
-
-
-@import '../../styles.css';
 
 /* bright specific style goes here */

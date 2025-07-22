@@ -32,8 +32,6 @@
   }
 }
 
-@import '../columns.css';
-
 /* Brand-specific overrides for columns block */
 
 /* .columns {
@@ -44,8 +42,6 @@
 
 } */
 
-@import '../../columns.css';
-
 /* Brand-specific overrides for roy block */
 
 /* .roy {
@@ -55,4 +51,3 @@
 
 
 } */
-
