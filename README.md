@@ -1,5 +1,5 @@
-# Your Project's Title...
-Your project's description...
+# EDS Multibrand boilerplate
+EDS Multibrand is an innovative starter project that extends the Adobe AEM Boilerplate to provide comprehensive multi-brand support within a single AEM project.
 
 ## Environments
 - Preview: https://main--eds-multi-brand--acs-ui.aem.page/
@@ -7,7 +7,7 @@ Your project's description...
 
 ## Documentation
 
-### Project Documentation
+### EDS Multibrand Project Documentation
 
 📚 **[View Full Documentation](https://acs-ui.github.io/eds-multi-brand-docs/)**
 
