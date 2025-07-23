@@ -49,7 +49,7 @@ npm i
 
 Start eds server and and serve merged CSS
 ```
-npm run scaffold:create
+npm start
 ```
 
 ## Theme Management
