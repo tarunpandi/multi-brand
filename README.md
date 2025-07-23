@@ -45,6 +45,13 @@ For detailed deployment rules, see [DEPLOYMENT-RULES.md](.github/workflows/DEPLO
 npm i
 ```
 
+## Start Dev Server
+
+Start eds server and and serve merged CSS
+```
+npm run scaffold:create
+```
+
 ## Theme Management
 
 ### Initiate new Brand Theme
