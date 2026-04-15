@@ -65,19 +65,24 @@
   display: none;
 }
 
-.tabs.reverse .tabs-list button {
-  background-color: blueviolet;
-}
-
 /* Brand-specific overrides for tabs block */
 
-/* .tabs {
-  h1 {
-    background-color: red;
+.tabs {
+  .tabs-panel {
+    background-color: var(--light-color);
   }
 
+  &.reverse {
+    .tabs-list button {
+      background-color: blueviolet;
+    } 
 
-} */
+    .tabs-panel {
+      background-color: blueviolet;
+      color: var(--light-color);
+    }
+  }
+}
 
 /* Brand-specific overrides for roy block */
 

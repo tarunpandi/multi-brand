@@ -65,10 +65,6 @@
   display: none;
 }
 
-.tabs.reverse .tabs-list button {
-  background-color: blueviolet;
-}
-
 /* Brand-specific overrides for tabs block */
 
 /* .tabs {
