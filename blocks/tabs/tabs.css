@@ -65,7 +65,3 @@
 .tabs .tabs-panel[aria-hidden='true'] {
   display: none;
 }
-
-.tabs.reverse .tabs-list button {
-  background-color: blueviolet;
-}
