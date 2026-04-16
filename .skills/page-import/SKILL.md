@@ -66,8 +66,8 @@ Use the TodoWrite tool to create a todo list with the following tasks:
 4. **Analyze authoring approach** (authoring-analysis skill)
    - Success: Every block classified as BRAND_READY / NEEDS_BRAND_SCAFFOLD / NEEDS_BLOCK_CREATION
 
-5. **Scaffold missing brand block folders** (this orchestrator — Step 4.5)
-   - Success: All blocks are BRAND_READY before HTML is generated
+5. **Resolve brand block readiness** (this orchestrator — Step 4.5)
+   - Success: No NEEDS_NEW_BLOCK / NEEDS_BLOCK_CREATION / NEEDS_BRAND_SCAFFOLD remaining; all CSS deltas written and built
 
 6. **Generate HTML file** (generate-import-html skill)
    - Success: HTML file at brand-prefixed path, brand/theme in metadata block, validation checklist passed
@@ -181,30 +181,34 @@ Store as: `CONTENT_PATH_PREFIX` — the brand folder prefix to prepend (defaults
 
 ---
 
-### Step 4.5: Scaffold Missing Brand Block Folders
+### Step 4.5: Resolve Brand Block Readiness
 
-**Only if BRAND is set and any block was classified as NEEDS_BRAND_SCAFFOLD or NEEDS_BLOCK_CREATION.**
-
-Review the classification output from Step 4. For each block that is not BRAND_READY:
+**Only if BRAND is set.** Review the full classification output from Step 4 (authoring-analysis). Work through each state in this order — blocking states first, CSS work last.
 
 ---
 
-**NEEDS_BRAND_SCAFFOLD** — block exists in `blocks/`, brand folder missing:
+**1. NEEDS_NEW_BLOCK — resolve first (blocking)**
 
+A block is needed that does not match any existing block's content model. Stop the import for that sequence and invoke **building-blocks** skill to create the block. The scaffold will automatically create brand folders for all brands in `brand-config.json`.
+
+After the block is created, re-run authoring-analysis Step 3b-i and 3b-ii for that sequence only before continuing.
+
+---
+
+**2. NEEDS_BLOCK_CREATION — resolve second (blocking)**
+
+Block Collection block needed, not yet in the project:
+
+**Option A — Minimal (unblock import, full implementation later):**
 ```bash
 npm run scaffold:create
 # Choose: Block → enter the block name
-# The scaffold reads brand-config.json and creates blocks/{block}/{brand}/ for ALL brands
-# Existing files are never overwritten — only missing brand folders are created
+# Creates base block + brand folders for all brands in brand-config.json
 ```
 
-Run once per affected block, then rebuild:
+**Option B — Full:** Invoke **building-blocks** skill. Use this when the block is central to the brand experience.
 
-```bash
-npm run scaffold:build
-```
-
-**Verify** the brand folder now exists before continuing:
+Verify after scaffold:
 ```bash
 ls blocks/{block-name}/{BRAND}/
 # Should show: _{block}.css  {block}.css  block-config.js  themes/
@@ -212,25 +216,67 @@ ls blocks/{block-name}/{BRAND}/
 
 ---
 
-**NEEDS_BLOCK_CREATION** — block not in `blocks/` at all (Block Collection block):
+**3. NEEDS_BRAND_SCAFFOLD — resolve third (blocking)**
 
-The block must be created first. Two options:
+Block in `blocks/`, brand folder missing:
 
-**Option A — Minimal (import-unblocking, style later):**
 ```bash
 npm run scaffold:create
 # Choose: Block → enter the block name
-# Creates a minimal block with brand folders for all brands in brand-config.json
-npm run scaffold:build
+# Reads brand-config.json, creates blocks/{block}/{brand}/ for ALL brands
+# Existing files are never overwritten
 ```
-The block will be functional with base styles. Brand-specific visual overrides can be added later via `/building-blocks`.
 
-**Option B — Full implementation:**
-Invoke the **building-blocks** skill to implement the block properly before continuing the import. This is the right choice if the block will be a core part of the brand experience and needs correct decoration logic now.
+Verify:
+```bash
+ls blocks/{block-name}/{BRAND}/
+```
 
 ---
 
-**When all blocks are BRAND_READY, mark this todo complete and proceed to Step 5.**
+**4. CSS delta — apply inline (non-blocking but required for correct preview)**
+
+For every block where authoring-analysis documented Layer A or Layer B visual delta:
+
+**Layer A — token overrides** (`styles/{BRAND}/_tokens.css`):
+
+Read the existing file first, then add only missing tokens:
+```bash
+# Read current brand tokens
+cat styles/{BRAND}/_tokens.css
+```
+Edit `styles/{BRAND}/_tokens.css` — add missing `--brand-*` values.
+
+**Layer B/C — block CSS delta** (`blocks/{block}/{BRAND}/_{block}.css`):
+
+Read the existing partial first (it starts with just `@import '../{block}.css';`), then append overrides:
+```css
+/* blocks/cards/roy/_cards.css */
+@import '../cards.css';
+
+.cards {
+  --cards-color-bg: var(--brand-surface);
+
+  .item {
+    border: 2px solid var(--brand-primary);
+    border-radius: 8px;
+  }
+}
+```
+
+Rules:
+- `@import` must remain the first line
+- Reference `var(--brand-*)` tokens, not hardcoded values
+- Scope all selectors to `.{block-name}`
+
+**After all CSS edits, run one build:**
+```bash
+npm run scaffold:build
+```
+
+---
+
+**When all blocks are in a resolved state and CSS deltas are built, mark this todo complete and proceed to Step 5.**
 
 ---
 

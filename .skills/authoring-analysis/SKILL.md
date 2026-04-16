@@ -203,11 +203,154 @@ After the block exists with brand folders, return to the import workflow.
 - If the brand config adds variations (e.g. `{ variation: 'split', module: 'split.js' }`), these become valid `classes` on the block div — use them where the source page layout matches.
 - Do **not** hardcode brand or theme names as block classes — they are set via page metadata, not block classes.
 
-**Document in your Step 3 output for every block:**
+---
+
+### Step 3b-ii: Visual Delta Analysis (ALWAYS — for every block selected)
+
+After classifying the block's brand state (Step 3b-i), compare how the block **looks on the source page** against the **base block CSS**. This determines whether to reuse the existing block with brand CSS overrides or create a new block entirely.
+
+**Core principle:** In this multi-brand project, visual differences between brands are handled at the CSS layer, not by creating new blocks. Only create a new block when the content model or decoration behaviour genuinely differs. When in doubt, favour CSS delta.
+
+---
+
+**Q1 — Does the content model match?**
+
+Look at the source page's block and compare its row/column structure against the block's expected pre-decoration HTML (from Step 3d).
+
+Ask: "Can an author produce this content by filling in the same table structure the block expects?"
+
+| What you see | Decision |
+|---|---|
+| Same rows/columns, same content types (image + text + link) | ✅ Content model matches → proceed to Q2 |
+| Extra column that doesn't exist in the block's model | ❌ Content model differs → **NEEDS_NEW_BLOCK** |
+| Different interaction (tabs vs accordion, carousel vs static grid) | ❌ Decoration behaviour differs → **NEEDS_NEW_BLOCK** |
+| Same structure, just fewer/more items | ✅ Content model matches (collection blocks scale with items) |
+
+If **NEEDS_NEW_BLOCK**: stop the import analysis for this sequence and invoke **building-blocks** skill. The import cannot proceed for this sequence until the block exists.
+
+---
+
+**Q2 — Does the visual rendering match?**
+
+Compare the source page screenshot against what the base block CSS produces.
+
+Ask: "If the base block CSS were applied to this content, would it look like the source page?"
+
+| Observation | Decision |
+|---|---|
+| Colors, fonts, spacing match base styles | ✅ No delta → block is ready, no CSS work needed |
+| Visual differences exist (colors, borders, typography differ) | → proceed to Q3 |
+
+---
+
+**Q3 — Classify the visual differences**
+
+For each visual difference observed, classify it into one of these layers:
+
+**Layer A — Design token** (values shared across multiple blocks for this brand):
+- Brand primary/accent/surface colours → `styles/{brand}/_tokens.css`
+- Brand font family/size scale → `styles/{brand}/_tokens.css`
+- Global link colour, background colour → `styles/{brand}/_tokens.css`
+
+Check `styles/{brand}/_tokens.css` first — if the token is already defined there, the difference is already covered by the cascade.
+
+**Layer B — Block CSS delta** (visual difference specific to this block in this brand):
+- Block-specific background, border, border-radius, shadow
+- Internal spacing (padding/gap) different from base
+- Element-level colour overrides not covered by global tokens
+- Typography tweaks specific to this block
+
+These go in `blocks/{block}/{brand}/_{block}.css` as overrides on the block's own CSS custom properties.
+
+**Layer C — Layout/structural CSS** (elements in different positions, different grid/flex arrangement):
+- Two-column vs one-column layout
+- Reversed column order (image left vs image right)
+- Full-width vs contained width
+
+Ask: "Can this layout difference be achieved purely in CSS (flexbox order, grid template)?"
+- YES → Layer B (CSS delta in brand partial) — no new block needed
+- NO → Check if an existing block variation handles it (look in `block-config.js` `variations[]`)
+  - Variation exists → apply the variation class on the block div in the HTML
+  - No variation → **NEEDS_NEW_VARIATION** — add the variation to `block-config.js` and its CSS to `blocks/{block}/{brand}/_{block}.css`
+
+**NEEDS_NEW_BLOCK only when:**
+- Content model genuinely differs (Q1 failed), OR
+- Requires different JavaScript decoration logic that cannot be a variation, OR
+- Mixing two distinctly different interaction patterns in one sequence
+
+---
+
+**Q4 — Document and write the CSS delta inline**
+
+For each Layer A or Layer B difference, write the CSS now — don't defer to "add later". The imported page must render correctly in preview (Step 6).
+
+**For Layer A (token overrides) — edit `styles/{brand}/_tokens.css`:**
+
+```css
+/* styles/roy/_tokens.css — add only values that differ from the source file */
+:root {
+  --brand-primary: #0057cc;    /* cards heading colour, hero CTA colour */
+  --brand-surface: #f0f4ff;    /* cards background */
+  --brand-accent: #ff6600;
+}
 ```
-→ hero: BRAND_READY (roy) | Extra variations: ['split'] — using 'split'
-→ cards: NEEDS_BRAND_SCAFFOLD — scaffold required before proceeding
-→ tabs: NEEDS_BLOCK_CREATION — block not in project, must be created first
+
+Read the existing `styles/{brand}/_tokens.css` first and add only what is missing.
+
+**For Layer B (block CSS delta) — edit `blocks/{block}/{brand}/_{block}.css`:**
+
+```css
+/* blocks/cards/roy/_cards.css */
+@import '../cards.css';   /* must stay as first line */
+
+.cards {
+  --cards-color-bg: var(--brand-surface);   /* override block token */
+
+  .item {
+    border: 2px solid var(--brand-primary);
+    border-radius: 8px;
+  }
+
+  .item-title {
+    color: var(--brand-primary);
+  }
+}
+```
+
+Rules:
+- Always reference brand tokens (`var(--brand-*)`) rather than hardcoded values
+- Scope all selectors to `.{block-name}` — no unscoped rules
+- The `@import` must remain the first line — it cascades the base block styles first
+
+After editing CSS partials, rebuild:
+```bash
+npm run scaffold:build
+```
+
+---
+
+**Step 3b-ii output — add to your Step 3 analysis for every block:**
+
+```
+→ cards: BRAND_READY (roy)
+   Content model: ✅ matches (collection, 3 items with image + text)
+   Visual delta:
+     Layer A tokens needed: --brand-primary (#0057cc), --brand-surface (#f0f4ff)
+       → styles/roy/_tokens.css — tokens already present ✅
+     Layer B block delta: card border (2px solid brand-primary), border-radius 8px, item-title colour
+       → blocks/cards/roy/_cards.css — writing delta inline ✅
+     Layer C layout: reversed column order on desktop
+       → CSS-achievable with flex row-reverse — adding to block delta ✅
+   Action: build after delta applied
+
+→ hero: BRAND_READY (roy)
+   Content model: ✅ matches
+   Visual delta: none — base styles match source page ✅
+   Action: none
+
+→ tabs: BRAND_READY (roy)
+   Content model: ❌ source page has 3 columns of content, not tab panels
+   Decision: NEEDS_NEW_BLOCK — invoke building-blocks before continuing
 ```
 
 ---
@@ -264,6 +407,7 @@ Section 1 (light):
     → Decision: Columns block (2 columns)
     → Reason: Side-by-side layout requires structure
     → Obvious match with "columns" block in inventory
+    → Brand (roy): BRAND_READY | Content model ✅ | Visual delta: none
 
 Section 2 (light):
   - Sequence 1: "Centered heading"
@@ -274,6 +418,13 @@ Section 2 (light):
     → Decision: Cards block
     → Reason: Repeating structured pattern, needs block
     → Obvious match with "cards" block in inventory
+    → Brand (roy): BRAND_READY | Content model ✅
+       Visual delta:
+         Layer A: --brand-surface already in styles/roy/_tokens.css ✅
+         Layer B: border 2px solid brand-primary, border-radius 8px
+           → writing to blocks/cards/roy/_cards.css ✅
+         Layer C: desktop reversed column order → CSS flex row-reverse → Layer B ✅
+       Action: npm run scaffold:build after delta
 
   - Sequence 3: "Two centered buttons"
     → Decision: DEFAULT CONTENT
@@ -288,6 +439,7 @@ Section 3 (grey):
     → Decision: Cards block
     → Reason: Repeating structured pattern
     → Obvious match with "cards" block in inventory
+    → Brand (roy): (same delta as Section 2 Sequence 2 — already applied ✅)
 
 Section 4 (dark):
   - Sequence 1: "Tab navigation with three switchable content panels"
