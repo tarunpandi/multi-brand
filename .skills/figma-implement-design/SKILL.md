@@ -6,6 +6,14 @@ description: "Translate Figma nodes into production-ready code with 1:1 visual f
 
 # Implement Design
 
+## Related Skills
+
+- **building-blocks**: Use to implement the block structure (JS decoration, base CSS, `block-config.js`) once the Figma design has been analysed and the content model is understood.
+- **building-brand-blocks**: Use when the Figma design is brand-specific — apply brand tokens and brand CSS overrides (`_{block}.css`) after the base block is implemented.
+- **building-brand**: Use if the Figma design represents a new brand identity — set up the brand scaffold before implementing brand-specific block overrides.
+- **building-themes**: Use when the Figma design includes theme variants (e.g. dark/light/bright) that apply across multiple blocks.
+- **content-modeling**: Use to define the author-facing content model (table structure) before implementing the block.
+
 ## Overview
 
 This skill provides a structured workflow for translating Figma designs into production-ready code with pixel-perfect accuracy. It ensures consistent integration with the Figma MCP server, proper use of design tokens, and 1:1 visual parity with designs.

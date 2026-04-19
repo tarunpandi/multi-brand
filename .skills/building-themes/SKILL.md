@@ -9,7 +9,8 @@ This skill guides you through managing the multi-brand and multi-theme system in
 
 ## Related Skills
 
-- **building-blocks**: Use when adding block-level brand/theme CSS overrides alongside a new block
+- **building-blocks**: Use when a new block needs to be created as part of a theme or brand implementation
+- **building-brand-blocks**: Use when adding block-level brand/theme CSS overrides alongside a new or existing block
 - **content-driven-development**: Use when brand/theme work is driven by a new content requirement
 
 ## When to Use This Skill
@@ -222,7 +223,7 @@ npm start                # Start dev server and verify in browser
 
 ### 6. Add block-level brand overrides (if needed)
 
-For each block needing brand customisation, edit `blocks/{block-name}/{brand}/_{block-name}.css`. See the **building-blocks** skill for block-level CSS patterns.
+For each block needing brand customisation, edit `blocks/{block-name}/{brand}/_{block-name}.css`. See the **building-brand-blocks** skill for block-level CSS patterns.
 
 ## Process: Adding a New Theme
 
@@ -288,7 +289,7 @@ npm start
 
 ### 5. Add block-level theme overrides (if needed)
 
-Edit `blocks/{block-name}/themes/{theme}/_{block-name}.css`. See the **building-blocks** skill.
+Edit `blocks/{block-name}/themes/{theme}/_{block-name}.css`. See the **building-brand-blocks** skill.
 
 ## Process: Removing a Brand or Theme
 

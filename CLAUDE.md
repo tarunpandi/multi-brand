@@ -87,7 +87,8 @@ Same hierarchy applies inside `blocks/{name}/`.
 Run `.agents/discover-skills` to list all available skills. Key skills:
 
 - `content-driven-development` — start here for all block tasks
-- `building-blocks` — create/modify blocks
+- `building-blocks` — create/modify blocks (generic)
+- `building-brand-blocks` — create/modify blocks with full brand and theme hierarchy support
 - `building-brand` — create/configure/remove a brand (scaffold + tokens + fonts + overrides)
 - `building-themes` — create/modify themes within or across brands
 - `testing-blocks` — test before PR
@@ -102,6 +103,7 @@ When the user's request matches these patterns, invoke the corresponding skill *
 | "create brand", "add brand", "new brand", "remove brand", "configure brand" | `building-brand` |
 | "create theme", "add theme", "new theme" | `building-themes` |
 | "create block", "add block", "new block", "modify block" | `building-blocks` |
+| "brand block", "block override", "brand CSS", "block brand styles" | `building-brand-blocks` |
 | "test block", "validate block" | `testing-blocks` |
 | "component model", "Universal Editor config" | `ue-component-model` |
 
