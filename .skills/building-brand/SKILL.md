@@ -10,7 +10,8 @@ This skill guides you through everything required to introduce a new brand ident
 ## Related Skills
 
 - **building-themes**: Use when adding a theme (visual variant) within or across brands after the brand is set up. The scaffold auto-creates theme folders for all existing themes when a brand is created.
-- **building-blocks**: Use when implementing block-level visual overrides specific to this brand. The scaffold creates empty override partials for all existing blocks.
+- **building-blocks**: Use when a new block needs to be created for this brand. The scaffold automatically creates brand folders for all brands in `brand-config.json` when a block is scaffolded.
+- **building-brand-blocks**: Use when implementing block-level visual overrides specific to this brand — editing `_{block}.css` partials, brand `block-config.js`, or brand+theme CSS. The scaffold creates empty override partials for all existing blocks.
 - **ue-component-model**: Use to expose `brand` as a page-level `select` field in Universal Editor after the brand is registered.
 
 ---
@@ -195,7 +196,7 @@ Keep this file minimal — prefer block-level overrides over global ones. Only p
 
 For each block that needs brand-specific visual changes, edit the generated partial in `blocks/{block}/{brand}/_{block}.css`. The scaffold has already created these files with `@import '../{block}.css';`.
 
-**See the `building-blocks` skill** for the full CSS authoring pattern. Key points:
+**See the `building-brand-blocks` skill** for the full CSS authoring pattern. Key points:
 
 ```css
 /* blocks/cards/{brand}/_cards.css */
@@ -243,7 +244,7 @@ export default async function getBlockConfigs() {
 
 The runtime (`multi-theme.js`) **merges** the root `block-config.js` and brand `block-config.js` — brand config takes precedence for matching keys.
 
-**See the `building-blocks` skill** for full `block-config.js` documentation.
+**See the `building-brand-blocks` skill** for full `block-config.js` documentation.
 
 ### Step 8: Build CSS
 

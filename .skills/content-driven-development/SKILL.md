@@ -41,6 +41,7 @@ This skill orchestrates other skills at the appropriate stages:
 
 - **content-modeling**: Invoked when new content models need to be designed or existing models modified
 - **building-blocks**: Invoked during implementation phase for block creation or modification
+- **building-brand-blocks**: Invoked when brand-level CSS overrides or theme overrides are needed for the block
 - **testing-blocks**: Referenced during validation phase for comprehensive testing
 - **block-collection-and-party**: Used to find similar blocks and reference implementations
 

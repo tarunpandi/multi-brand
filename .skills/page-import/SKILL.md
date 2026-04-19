@@ -206,7 +206,17 @@ npm run scaffold:create
 # Creates base block + brand folders for all brands in brand-config.json
 ```
 
-**Option B — Full:** Invoke **building-blocks** skill. Use this when the block is central to the brand experience.
+**Option B — Full implementation (two steps):**
+
+**Step 1** — Invoke **building-blocks** skill to create and implement the block:
+- Creates the full block structure (JS decoration logic in `decorateBlock`, base CSS, `block-config.js`)
+- The scaffold (`npm run scaffold:create`) automatically creates brand folders for all brands in `brand-config.json`
+- Use this when the block needs proper decoration logic and base styling
+
+**Step 2** — Invoke **building-brand-blocks** skill to add brand-level overrides:
+- Adds brand-specific visual delta CSS to `blocks/{block}/{BRAND}/_{block}.css`
+- Adds brand-level `block-config.js` overrides if the brand needs different variations or flags
+- Use this when the block is central to the brand experience and needs tailored visual treatment beyond base styles
 
 Verify after scaffold:
 ```bash

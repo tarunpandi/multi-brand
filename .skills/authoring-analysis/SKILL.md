@@ -176,7 +176,7 @@ Then rebuild:
 npm run scaffold:build
 ```
 
-The brand CSS files will be minimal (just `@import '../{block}.css';`) — the block inherits base styles. Brand-specific visual overrides can be added later via `/building-blocks`.
+The brand CSS files will be minimal (just `@import '../{block}.css';`) — the block inherits base styles. Brand-specific visual overrides can be added later via `/building-brand-blocks`.
 
 ---
 
