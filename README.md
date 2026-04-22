@@ -136,6 +136,11 @@ These skills enable EMA to scaffold, migrate, and style sites that follow the ED
 
 #### EMA Prompt Workflow & Steps
 
+> **Before you start:** Send the following instruction to the agent **once at the beginning of your session**, before running any prompts below. This loads the `building-brand-blocks` skill and ensures all block styling and migration work conforms to the project's CSS scoping, design token, naming, and JS decoration standards. This only needs to be sent once per session — not before every prompt.
+> ```
+> Load and follow the building-brand-blocks skill from .claude/skills/building-brand-blocks/SKILL.md for all block styling and CSS/JS work in this session.
+> ```
+
 **Base Site Migration**
 
 Steps to onboard a new site at the root:
