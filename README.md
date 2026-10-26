@@ -338,3 +338,4 @@ Slash commands are shortcuts for common workflows. They are supported in Claude 
 3. Pass arguments inline: `/eds-style-brand-page brand=acme url=https://example.com/en/`.
 4. If a required argument is missing, the agent will prompt you for it before proceeding.
 5. Commands chain into skills automatically — no manual skill invocation needed.
+# multi-brand
